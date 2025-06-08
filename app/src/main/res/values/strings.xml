@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MindToolsApp</string>
+    <string name="mind_tools">Mind Tools</string>
+    <string name="mood_title">Mood Filter</string>
 </resources>
