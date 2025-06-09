@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
@@ -30,6 +33,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -46,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 
@@ -144,8 +149,9 @@ fun ActivityList(modifier: Modifier = Modifier) {
                 style = TextStyle(
                     fontSize = 24.sp,
                     shadow = Shadow(
-                        color = Color.Unspecified, blurRadius = 3f)
-            ))
+                        color = Color.Unspecified, blurRadius = 3f))
+            )
+
         }
     }
 }
@@ -185,7 +191,7 @@ fun MoodSelectionPage(modifier: Modifier = Modifier) {
 @Composable
 fun MoodSelectionPage() {
     Scaffold(
-        topBar = { MoodSelectionTopBar() },
+        topBar = { GeneralTopBar("Mood Filter") },
         bottomBar = {MoodSelectionBottomBar()},
 
         ) { paddingValues ->
@@ -236,10 +242,10 @@ fun MoodList(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoodSelectionTopBar() {
+fun GeneralTopBar(topTitle: String) {
     TopAppBar(
         title = {
-            Text(text = "Mood Filter")
+            Text(text = topTitle)
         },
         navigationIcon = {
             IconButton(onClick = { /* handle back click */ }) {
@@ -274,10 +280,43 @@ fun MoodSelectionBottomBar() {
 }
 
 
-//@Composable
-//fun AddActivityPage() {
-//
-//}
+@Composable
+fun ActivityTypePage() {
+    Scaffold(
+        topBar = { GeneralTopBar("Choose Activity Type") },
+        bottomBar = {MoodSelectionBottomBar()}
+
+        ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+
+                .fillMaxSize()
+            .wrapContentSize(Alignment.Center),
+            verticalArrangement = Arrangement.spacedBy(50.dp)
+        ) {
+            Button(onClick = { /* TODO: Handle Text Based */ }) {
+                Text("Text Based")
+            }
+
+            Button(onClick = { /* TODO: Handle Link/Video */ }) {
+                Text("Link/Video")
+            }
+            Button(onClick = { /* TODO: Handle Phone Call */ }) {
+                Text("Phone Call")
+            }
+            Button(onClick = { /* TODO: Handle Document */ }) {
+                Text("Document")
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ActivityTypePagePreview() {
+    ActivityTypePage()
+}
 
 @Composable
 @Preview(showBackground = true)
