@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -71,14 +72,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
 fun MindToolsApp() {
-    MindToolsAppTheme {
-        MoodSelectionPage(modifier = Modifier.fillMaxSize())
-    }
+    // Will later switch between screens
+    MoodSelectionPage(modifier = Modifier.fillMaxSize())
 }
-
 
 
 @Composable
@@ -176,6 +175,8 @@ fun ActivityList(modifier: Modifier = Modifier) {
 }
 
 
+
+
 @Composable
 fun MoodSelectionPage(modifier: Modifier = Modifier) {
     Scaffold(
@@ -197,6 +198,7 @@ fun MoodList(modifier: Modifier = Modifier) {
             .background(MaterialTheme.colorScheme.surfaceDim)
             .padding(8.dp),
         columns = GridCells.Fixed(1)
+
     ) {
         items(8) { index ->
             Row(
@@ -207,10 +209,10 @@ fun MoodList(modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = "Mood $index",
-                    style = MaterialTheme.typography.displayLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-
+                Spacer(modifier = Modifier.weight(1f))
                 Checkbox(
                     checked = checkedStates.getOrDefault(index, false),
                     onCheckedChange = { checked ->
@@ -284,59 +286,102 @@ fun MoodSelectionBottomBar() {
 fun ActivityTypePage() {
     Scaffold(
         topBar = { GeneralTopBar("Choose Activity Type") },
-        bottomBar = {MoodSelectionBottomBar()}
-
-        ) { paddingValues ->
+        bottomBar = { MoodSelectionBottomBar() }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-
                 .fillMaxSize()
-            .wrapContentSize(Alignment.Center),
-            verticalArrangement = Arrangement.spacedBy(50.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { /* TODO: Handle Text Based */ }) {
-                Text("Text Based",
-                    color = MaterialTheme.colorScheme.onPrimary)
+            val buttonModifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(56.dp)
+
+            Button(
+                onClick = { /* TODO */ },
+                modifier = buttonModifier
+            ) {
+                Text(
+                    text = "Text Based",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
 
-            Button(onClick = { /* TODO: Handle Link/Video */ }) {
-                Text("Link/Video",
-                    color = MaterialTheme.colorScheme.onPrimary)
+            Button(
+                onClick = { /* TODO */ },
+                modifier = buttonModifier
+            ) {
+                Text(
+                    text = "Link/Video",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
-            Button(onClick = { /* TODO: Handle Phone Call */ }) {
-                Text("Phone Call",
-                    color = MaterialTheme.colorScheme.onPrimary)
+
+            Button(
+                onClick = { /* TODO */ },
+                modifier = buttonModifier
+            ) {
+                Text(
+                    text = "Phone Call",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
-            Button(onClick = { /* TODO: Handle Document */ }) {
-                Text("Document",
-                    color = MaterialTheme.colorScheme.onPrimary)
+
+            Button(
+                onClick = { /* TODO */ },
+                modifier = buttonModifier
+            ) {
+                Text(
+                    text = "Document",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
 }
 
+
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
+@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
-@Preview(showBackground = true)
 fun ActivityTypePagePreview() {
     MindToolsAppTheme {
         ActivityTypePage()
     }
 }
 
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
+@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
-@Preview(showBackground = true)
 fun MoodSelectionPagePreview() {
     MindToolsAppTheme {
         MoodSelectionPage()
     }
 }
 
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
+@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
-@Preview(showBackground = true)
-fun MindToolsPagePreview(){
+fun MindToolsPagePreview() {
     MindToolsAppTheme {
         MindToolsPage()
     }
 }
+
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
+@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+@Composable
+fun MindToolsAppPreview() {
+    MindToolsAppTheme {
+        MoodSelectionPage(modifier = Modifier.fillMaxSize())
+    }
+}
+
 
