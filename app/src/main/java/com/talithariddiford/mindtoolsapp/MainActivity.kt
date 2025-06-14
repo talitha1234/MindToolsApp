@@ -2,6 +2,7 @@ package com.talithariddiford.mindtoolsapp
 
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,8 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
@@ -40,6 +42,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.foundation.lazy.items
 
 
 import androidx.compose.material3.IconButton
@@ -52,11 +55,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
+import com.talithariddiford.mindtoolsapp.data.Datasource
 
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
+import com.talithariddiford.mindtoolsapp.model.Activity
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
 
@@ -66,9 +67,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MindToolsAppTheme() {
-                Scaffold(modifier = Modifier.fillMaxSize()) {innerPadding ->
-                    MindToolsApp(innerPadding)
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MindToolsApp(innerPadding = innerPadding)
                 }
+
 
             }
 
@@ -85,21 +87,27 @@ fun MindToolsApp(innerPadding: PaddingValues) {
 }
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MindToolsPage(modifier: Modifier = Modifier) {
+fun ActivityToolsPage(modifier: Modifier = Modifier) {
     Scaffold(
+        modifier = modifier,
         topBar = { MindToolsTopBar() },
         bottomBar = { MindToolsBottomBar() },
 
     ) { paddingValues ->
-        ActivityList(modifier = Modifier.padding(paddingValues))
+        ActivityList(
+            activities = Datasource().loadActivities(),
+            modifier = Modifier.padding(paddingValues)
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MindToolsTopBar() {
+fun MindToolsTopBar(modifier: Modifier = Modifier) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(R.string.mind_tools),
@@ -113,8 +121,9 @@ fun MindToolsTopBar() {
 }
 
 @Composable
-fun MindToolsBottomBar() {
+fun MindToolsBottomBar(modifier: Modifier = Modifier) {
     BottomAppBar(
+        modifier = modifier,
         actions = {
             IconButton(onClick = { /* TODO: Handle Add */ }) {
                 Icon(
@@ -155,36 +164,51 @@ fun MindToolsBottomBar() {
 
 
 @Composable
-fun ActivityList(modifier: Modifier = Modifier) {
-    LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-
-            .padding(8.dp),
-        columns = GridCells.Fixed(1)
-    ) {
-        items(30) {
-            Text(
-                modifier = Modifier
-                    .padding(30.dp),
-
-                text = stringResource(R.string.activity_number, it),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
-
-            )
-
+fun ActivityList(
+    activities: List<Activity> = Datasource().loadActivities(),
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
+        items(activities) { activity ->
+            ActivityRow(activity = activity)
         }
     }
 }
 
 
 
+@Composable
+fun ActivityRow(
+    activity: Activity,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(72.dp)                   // ← make the row taller
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = activity.icon,
+            contentDescription = stringResource(activity.titleRes),
+            modifier = Modifier
+                .size(32.dp)                    // ← larger icon
+        )
+        Spacer(Modifier.width(16.dp))
+        Text(
+            text = stringResource(activity.titleRes),
+            style = MaterialTheme.typography.titleMedium  // ← bigger text
+        )
+    }
+}
+
+
 
 @Composable
 fun MoodSelectionPage(modifier: Modifier = Modifier) {
     Scaffold(
+        modifier = modifier,
         topBar = { GeneralTopBar(stringResource(R.string.mood_title)) },
         bottomBar = {MoodSelectionBottomBar()},
 
@@ -234,8 +258,9 @@ fun MoodList(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GeneralTopBar(topTitle: String) {
+fun GeneralTopBar(topTitle: String, modifier: Modifier = Modifier) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = topTitle,
@@ -259,8 +284,9 @@ fun GeneralTopBar(topTitle: String) {
 }
 
 @Composable
-fun MoodSelectionBottomBar() {
+fun MoodSelectionBottomBar(modifier: Modifier = Modifier) {
     BottomAppBar(
+        modifier = modifier,
         actions = {
             IconButton(onClick = { /* TODO: Handle Home */ }) {
                 Icon(
@@ -288,8 +314,9 @@ fun MoodSelectionBottomBar() {
 
 
 @Composable
-fun ActivityTypePage() {
+fun ActivityTypePage(modifier: Modifier = Modifier) {
     Scaffold(
+        modifier = modifier,
         topBar = { GeneralTopBar(stringResource(R.string.choose_activity_type)) },
         bottomBar = { MoodSelectionBottomBar() }
     ) { paddingValues ->
@@ -374,9 +401,9 @@ fun MoodSelectionPagePreview() {
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
 @Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
-fun MindToolsPagePreview() {
+fun ActivityToolsPagePreview() {
     MindToolsAppTheme {
-        MindToolsPage()
+        ActivityToolsPage()
     }
 }
 
