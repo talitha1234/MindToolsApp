@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,7 +66,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MindToolsAppTheme() {
-                MindToolsApp()
+                Scaffold(modifier = Modifier.fillMaxSize()) {innerPadding ->
+                    MindToolsApp(innerPadding)
+                }
+
             }
 
         }
@@ -74,9 +78,10 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MindToolsApp() {
-    // Will later switch between screens
-    MoodSelectionPage(modifier = Modifier.fillMaxSize())
+fun MindToolsApp(innerPadding: PaddingValues) {
+    MoodSelectionPage(modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding))
 }
 
 
@@ -97,7 +102,7 @@ fun MindToolsTopBar() {
     TopAppBar(
         title = {
             Text(
-                text = "Mind Tools",
+                text = stringResource(R.string.mind_tools),
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
@@ -114,7 +119,7 @@ fun MindToolsBottomBar() {
             IconButton(onClick = { /* TODO: Handle Add */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
-                    contentDescription = "Add",
+                    contentDescription = stringResource(R.string.add),
                     tint = MaterialTheme.colorScheme.onSurface
 
                 )
@@ -122,7 +127,7 @@ fun MindToolsBottomBar() {
             IconButton(onClick = { /* TODO: Handle Search */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
-                    contentDescription = "Search Activities",
+                    contentDescription = stringResource(R.string.search_activities),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -133,12 +138,12 @@ fun MindToolsBottomBar() {
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Tune,
-                    contentDescription = "Filter Activities",
+                    contentDescription = stringResource(R.string.filter_activities),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     modifier = Modifier.padding(14.dp),
-                    text = "Filter by Mood",
+                    text = stringResource(R.string.filter_by_mood),
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -164,7 +169,7 @@ fun ActivityList(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(30.dp),
 
-                text = "Activity number $it",
+                text = stringResource(R.string.activity_number, it),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
 
@@ -180,7 +185,7 @@ fun ActivityList(modifier: Modifier = Modifier) {
 @Composable
 fun MoodSelectionPage(modifier: Modifier = Modifier) {
     Scaffold(
-        topBar = { GeneralTopBar("Mood Filter") },
+        topBar = { GeneralTopBar(stringResource(R.string.mood_title)) },
         bottomBar = {MoodSelectionBottomBar()},
 
         ) { paddingValues ->
@@ -208,7 +213,7 @@ fun MoodList(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Mood $index",
+                    text = stringResource(R.string.mood_number, index),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -241,7 +246,7 @@ fun GeneralTopBar(topTitle: String) {
             IconButton(onClick = { /* handle back click */ }) {
                 Icon(
                     Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -260,7 +265,7 @@ fun MoodSelectionBottomBar() {
             IconButton(onClick = { /* TODO: Handle Home */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Home,
-                    contentDescription = "Home",
+                    contentDescription = stringResource(R.string.home),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
 
@@ -272,7 +277,7 @@ fun MoodSelectionBottomBar() {
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Save Selection",
+                    contentDescription = stringResource(R.string.save_selection),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
 
@@ -285,7 +290,7 @@ fun MoodSelectionBottomBar() {
 @Composable
 fun ActivityTypePage() {
     Scaffold(
-        topBar = { GeneralTopBar("Choose Activity Type") },
+        topBar = { GeneralTopBar(stringResource(R.string.choose_activity_type)) },
         bottomBar = { MoodSelectionBottomBar() }
     ) { paddingValues ->
         Column(
@@ -305,7 +310,7 @@ fun ActivityTypePage() {
                 modifier = buttonModifier
             ) {
                 Text(
-                    text = "Text Based",
+                    text = stringResource(R.string.text_based),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -316,7 +321,7 @@ fun ActivityTypePage() {
                 modifier = buttonModifier
             ) {
                 Text(
-                    text = "Link/Video",
+                    text = stringResource(R.string.link_video),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -327,7 +332,7 @@ fun ActivityTypePage() {
                 modifier = buttonModifier
             ) {
                 Text(
-                    text = "Phone Call",
+                    text = stringResource(R.string.phone_call),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -338,7 +343,7 @@ fun ActivityTypePage() {
                 modifier = buttonModifier
             ) {
                 Text(
-                    text = "Document",
+                    text = stringResource(R.string.document),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )

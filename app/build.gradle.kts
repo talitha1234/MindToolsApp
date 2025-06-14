@@ -59,5 +59,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.material3)
+//    implementation("androidx.compose.material3:material3-window-size-class")
+//    implementation("androidx.compose.material3:adaptive:1.0.0-alpha05")
+
+
 
 }

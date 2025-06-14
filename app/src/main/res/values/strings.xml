@@ -2,4 +2,18 @@
     <string name="app_name">MindToolsApp</string>
     <string name="mind_tools">Mind Tools</string>
     <string name="mood_title">Mood Filter</string>
+    <string name="add">Add</string>
+    <string name="search_activities">Search Activities</string>
+    <string name="filter_activities">Filter Activities</string>
+    <string name="filter_by_mood">Filter by Mood</string>
+    <string name="activity_number">Activity number %1$d</string>
+    <string name="mood_number">Mood %1$d</string>
+    <string name="back">Back</string>
+    <string name="home">Home</string>
+    <string name="save_selection">Save Selection</string>
+    <string name="choose_activity_type">Choose Activity Type</string>
+    <string name="text_based">Text Based</string>
+    <string name="link_video">Link/Video</string>
+    <string name="phone_call">Phone Call</string>
+    <string name="document">Document</string>
 </resources>
