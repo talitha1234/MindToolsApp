@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Certificate string array -->
+    <string-array name="com_google_android_gms_fonts_certs_prod">
+        <item>
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs6I+e+k6gDC3GR+33m+N
+            VzX1kTfKL0TzvJtKz1t43IhVN7OH4k2xW78bdyJjVZaOIH2O9rT3F5xJvHTxZCw5
+            Uz5y0K5Lv5vEQDWqmyuEyhD9K/eZShlhWS0s9R8SihpqMG+ld7cpkgj69ip5LzRs
+            qnKfJ6k5d/NQzBZ0WQIDAQAB
+        </item>
+    </string-array>
+
+    <!-- Link the above cert to the name your code is using -->
+    <array name="com_google_android_gms_fonts_certs">
+        <item>@array/com_google_android_gms_fonts_certs_prod</item>
+    </array>
+
+</resources>

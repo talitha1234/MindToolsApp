@@ -41,8 +41,10 @@ import androidx.compose.material3.FloatingActionButton
 
 
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
@@ -53,6 +55,7 @@ import androidx.compose.ui.graphics.Shadow
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +63,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MindToolsApp()
+            MindToolsAppTheme() {
+                MindToolsApp()
+            }
+
         }
     }
 }
@@ -68,9 +74,11 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun MindToolsApp() {
-    MindToolsPage(modifier = Modifier
-        .fillMaxSize())
+    MindToolsAppTheme {
+        MoodSelectionPage(modifier = Modifier.fillMaxSize())
+    }
 }
+
 
 
 @Composable
@@ -89,8 +97,14 @@ fun MindToolsPage(modifier: Modifier = Modifier) {
 fun MindToolsTopBar() {
     TopAppBar(
         title = {
-            Text(text = "Mind Tools")
-        }
+            Text(
+                text = "Mind Tools",
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     )
 }
 
@@ -101,13 +115,16 @@ fun MindToolsBottomBar() {
             IconButton(onClick = { /* TODO: Handle Add */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
-                    contentDescription = "Add"
+                    contentDescription = "Add",
+                    tint = MaterialTheme.colorScheme.onSurface
+
                 )
             }
             IconButton(onClick = { /* TODO: Handle Search */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
-                    contentDescription = "Search Activities"
+                    contentDescription = "Search Activities",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         },
@@ -117,11 +134,13 @@ fun MindToolsBottomBar() {
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Tune,
-                    contentDescription = "Filter Activities"
+                    contentDescription = "Filter Activities",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     modifier = Modifier.padding(14.dp),
-                    text = "Filter by Mood"
+                    text = "Filter by Mood",
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -136,7 +155,8 @@ fun ActivityList(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray)
+            .background(MaterialTheme.colorScheme.background)
+
             .padding(8.dp),
         columns = GridCells.Fixed(1)
     ) {
@@ -146,50 +166,18 @@ fun ActivityList(modifier: Modifier = Modifier) {
                     .padding(30.dp),
 
                 text = "Activity number $it",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    shadow = Shadow(
-                        color = Color.Unspecified, blurRadius = 3f))
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+
             )
 
         }
     }
 }
+
 
 @Composable
 fun MoodSelectionPage(modifier: Modifier = Modifier) {
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier,
-
-            ) {
-            IconButton(onClick = { /* handle click */ }) {
-                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = stringResource(R.string.mood_title),
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    shadow = Shadow(
-                        color = Color.Black,
-                        blurRadius = 3f
-                    )
-                )
-            )
-        }
-    }
-}
-
-@Composable
-fun MoodSelectionPage() {
     Scaffold(
         topBar = { GeneralTopBar("Mood Filter") },
         bottomBar = {MoodSelectionBottomBar()},
@@ -206,7 +194,7 @@ fun MoodList(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(MaterialTheme.colorScheme.surfaceDim)
             .padding(8.dp),
         columns = GridCells.Fixed(1)
     ) {
@@ -219,13 +207,10 @@ fun MoodList(modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = "Mood $index",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.Unspecified, blurRadius = 3f)
-                    ),
-                    modifier = Modifier.weight(1f)
+                    style = MaterialTheme.typography.displayLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
+
                 Checkbox(
                     checked = checkedStates.getOrDefault(index, false),
                     onCheckedChange = { checked ->
@@ -245,14 +230,25 @@ fun MoodList(modifier: Modifier = Modifier) {
 fun GeneralTopBar(topTitle: String) {
     TopAppBar(
         title = {
-            Text(text = topTitle)
+            Text(
+                text = topTitle,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         },
         navigationIcon = {
             IconButton(onClick = { /* handle back click */ }) {
-                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
+                Icon(
+                    Icons.AutoMirrored.Rounded.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     )
+
 }
 
 @Composable
@@ -262,8 +258,10 @@ fun MoodSelectionBottomBar() {
             IconButton(onClick = { /* TODO: Handle Home */ }) {
                 Icon(
                     imageVector = Icons.Rounded.Home,
-                    contentDescription = "Home"
+                    contentDescription = "Home",
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
+
             }
         },
         floatingActionButton = {
@@ -272,8 +270,10 @@ fun MoodSelectionBottomBar() {
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Save Selection"
+                    contentDescription = "Save Selection",
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
+
             }
         }
     )
@@ -296,17 +296,21 @@ fun ActivityTypePage() {
             verticalArrangement = Arrangement.spacedBy(50.dp)
         ) {
             Button(onClick = { /* TODO: Handle Text Based */ }) {
-                Text("Text Based")
+                Text("Text Based",
+                    color = MaterialTheme.colorScheme.onPrimary)
             }
 
             Button(onClick = { /* TODO: Handle Link/Video */ }) {
-                Text("Link/Video")
+                Text("Link/Video",
+                    color = MaterialTheme.colorScheme.onPrimary)
             }
             Button(onClick = { /* TODO: Handle Phone Call */ }) {
-                Text("Phone Call")
+                Text("Phone Call",
+                    color = MaterialTheme.colorScheme.onPrimary)
             }
             Button(onClick = { /* TODO: Handle Document */ }) {
-                Text("Document")
+                Text("Document",
+                    color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -315,18 +319,24 @@ fun ActivityTypePage() {
 @Composable
 @Preview(showBackground = true)
 fun ActivityTypePagePreview() {
-    ActivityTypePage()
+    MindToolsAppTheme {
+        ActivityTypePage()
+    }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun MoodSelectionPagePreview() {
-    MoodSelectionPage()
+    MindToolsAppTheme {
+        MoodSelectionPage()
+    }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun MindToolsPagePreview(){
-    MindToolsPage()
+    MindToolsAppTheme {
+        MindToolsPage()
+    }
 }
 
