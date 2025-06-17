@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Home
@@ -43,13 +43,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Card
 
 
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MindToolsAppTheme() {
+            MindToolsAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MindToolsApp(innerPadding = innerPadding)
                 }
@@ -111,12 +112,10 @@ fun MindToolsTopBar(modifier: Modifier = Modifier) {
         title = {
             Text(
                 text = stringResource(R.string.mind_tools),
-                color = MaterialTheme.colorScheme.onSurface
+
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+
     )
 }
 
@@ -129,7 +128,7 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
                     contentDescription = stringResource(R.string.add),
-                    tint = MaterialTheme.colorScheme.onSurface
+
 
                 )
             }
@@ -137,7 +136,7 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = stringResource(R.string.search_activities),
-                    tint = MaterialTheme.colorScheme.onSurface
+
                 )
             }
         },
@@ -148,12 +147,12 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Tune,
                     contentDescription = stringResource(R.string.filter_activities),
-                    tint = MaterialTheme.colorScheme.onSurface
+
                 )
                 Text(
                     modifier = Modifier.padding(14.dp),
                     text = stringResource(R.string.filter_by_mood),
-                    color = MaterialTheme.colorScheme.onSurface
+
                 )
             }
         }
@@ -182,6 +181,7 @@ fun ActivityRow(
     activity: Activity,
     modifier: Modifier = Modifier
 ) {
+    Card(modifier = modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -193,14 +193,17 @@ fun ActivityRow(
             imageVector = activity.icon,
             contentDescription = stringResource(activity.titleRes),
             modifier = Modifier
-                .size(32.dp)                    // ← larger icon
+                .size(32.dp),
+
         )
         Spacer(Modifier.width(16.dp))
         Text(
             text = stringResource(activity.titleRes),
-            style = MaterialTheme.typography.titleMedium  // ← bigger text
+            style = MaterialTheme.typography.titleMedium,
+
         )
     }
+        }
 }
 
 
@@ -224,7 +227,7 @@ fun MoodList(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceDim)
+//            .background(MaterialTheme.colorScheme.surfaceDim)
             .padding(8.dp),
         columns = GridCells.Fixed(1)
 
@@ -239,7 +242,7 @@ fun MoodList(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.mood_number, index),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Checkbox(
@@ -264,7 +267,7 @@ fun GeneralTopBar(topTitle: String, modifier: Modifier = Modifier) {
         title = {
             Text(
                 text = topTitle,
-                color = MaterialTheme.colorScheme.onSurface
+
             )
         },
         navigationIcon = {
@@ -272,13 +275,10 @@ fun GeneralTopBar(topTitle: String, modifier: Modifier = Modifier) {
                 Icon(
                     Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.onSurface
+
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
     )
 
 }
@@ -292,7 +292,7 @@ fun MoodSelectionBottomBar(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Home,
                     contentDescription = stringResource(R.string.home),
-                    tint = MaterialTheme.colorScheme.onPrimary
+
                 )
 
             }
@@ -304,7 +304,7 @@ fun MoodSelectionBottomBar(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = stringResource(R.string.save_selection),
-                    tint = MaterialTheme.colorScheme.onPrimary
+
                 )
 
             }
@@ -339,7 +339,7 @@ fun ActivityTypePage(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.text_based),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
+
                 )
             }
 
@@ -350,7 +350,7 @@ fun ActivityTypePage(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.link_video),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
+
                 )
             }
 
@@ -361,7 +361,7 @@ fun ActivityTypePage(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.phone_call),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
+
                 )
             }
 
@@ -372,7 +372,7 @@ fun ActivityTypePage(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.document),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
+
                 )
             }
         }
@@ -381,7 +381,7 @@ fun ActivityTypePage(modifier: Modifier = Modifier) {
 
 
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
-@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+//@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
 fun ActivityTypePagePreview() {
     MindToolsAppTheme {
@@ -390,7 +390,7 @@ fun ActivityTypePagePreview() {
 }
 
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
-@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+//@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
 fun MoodSelectionPagePreview() {
     MindToolsAppTheme {
@@ -399,7 +399,7 @@ fun MoodSelectionPagePreview() {
 }
 
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
-@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+//@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
 fun ActivityToolsPagePreview() {
     MindToolsAppTheme {
@@ -408,7 +408,7 @@ fun ActivityToolsPagePreview() {
 }
 
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
-@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+//@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
 @Composable
 fun MindToolsAppPreview() {
     MindToolsAppTheme {

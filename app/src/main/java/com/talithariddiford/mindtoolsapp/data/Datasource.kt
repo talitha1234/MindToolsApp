@@ -14,10 +14,10 @@ class Datasource() {
             Activity(R.string.phone_call, Icons.Rounded.Call),
             Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
             Activity(R.string.cbt, Icons.Rounded.Attachment),
-            Activity(R.string.phone_call, Icons.Rounded.Call),
+            Activity(R.string.call_lifeline, Icons.Rounded.Call),
             Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
             Activity(R.string.cbt, Icons.Rounded.Attachment),
-            Activity(R.string.phone_call, Icons.Rounded.Call),
+            Activity(R.string.call_lifeline, Icons.Rounded.Call),
             Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
         )
 
