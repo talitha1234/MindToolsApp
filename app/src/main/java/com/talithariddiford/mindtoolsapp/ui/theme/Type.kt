@@ -1,6 +1,5 @@
 package com.talithariddiford.mindtoolsapp.ui.theme
 
-import com.talithariddiford.mindtoolsapp.R
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -9,25 +8,24 @@ import androidx.compose.ui.unit.sp
 
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
-
+import com.talithariddiford.mindtoolsapp.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
     certificates = R.array.com_google_android_gms_fonts_certs
-
 )
 
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Alexandria"),
+        googleFont = GoogleFont("Share Tech Mono"),
         fontProvider = provider,
     )
 )
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("ABeeZee"),
+        googleFont = GoogleFont("Share Tech Mono"),
         fontProvider = provider,
     )
 )
@@ -52,3 +50,4 @@ val AppTypography = Typography(
     labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )
+

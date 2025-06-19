@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Arrangement
 
@@ -19,10 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -30,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-
+import androidx.compose.foundation.Image
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Home
@@ -45,23 +43,20 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Card
-
-
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import com.talithariddiford.mindtoolsapp.data.Datasource
-
 import com.talithariddiford.mindtoolsapp.model.Activity
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
@@ -114,11 +109,23 @@ fun MindToolsTopBar(modifier: Modifier = Modifier) {
     TopAppBar(
         modifier = modifier,
         title = {
-            Text(
-                text = stringResource(R.string.mind_tools),
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.image_size))
+                        .padding(dimensionResource(id = R.dimen.padding_small)),
+                    painter = painterResource(R.drawable.mindtools_logo),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(R.string.mind_tools),
+                    style = MaterialTheme.typography.displayMedium
 
-            )
-        },
+                    )
+
+            }
+
+        }
 
     )
 }
@@ -207,7 +214,8 @@ fun ActivityRow(
 
         Text(
             text = stringResource(activity.titleRes),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.bodyLarge,
+
 
         )
     }
