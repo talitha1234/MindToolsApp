@@ -56,6 +56,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import com.talithariddiford.mindtoolsapp.data.Datasource
 
 import com.talithariddiford.mindtoolsapp.model.Activity
@@ -82,7 +86,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MindToolsApp(innerPadding: PaddingValues) {
-    MoodSelectionPage(modifier = Modifier
+    ActivityToolsPage(modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding))
 }
@@ -164,12 +168,16 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun ActivityList(
-    activities: List<Activity> = Datasource().loadActivities(),
+    activities: List<Activity>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
         items(activities) { activity ->
-            ActivityRow(activity = activity)
+            ActivityRow(
+                activity = activity,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+            )
         }
     }
 }
@@ -181,22 +189,22 @@ fun ActivityRow(
     activity: Activity,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier) {
+    Card(
+        modifier = modifier
+    ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(72.dp)                   // ← make the row taller
-            .padding(horizontal = 16.dp),
+//            .height(72.dp)                   // ← make the row taller
+            .padding(dimensionResource(R.dimen.padding_small)),
+
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = activity.icon,
-            contentDescription = stringResource(activity.titleRes),
-            modifier = Modifier
-                .size(32.dp),
-
+        MindToolIcon(
+            imageVector        = activity.icon,
+            contentDescription = stringResource(activity.titleRes)
         )
-        Spacer(Modifier.width(16.dp))
+
         Text(
             text = stringResource(activity.titleRes),
             style = MaterialTheme.typography.titleMedium,
@@ -206,6 +214,22 @@ fun ActivityRow(
         }
 }
 
+
+@Composable
+fun MindToolIcon(
+    imageVector: ImageVector,
+    contentDescription: String?,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector        = imageVector,
+        contentDescription = contentDescription,
+        modifier           = modifier
+            .size(dimensionResource(R.dimen.image_size))
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(MaterialTheme.shapes.small)
+    )
+}
 
 
 @Composable
@@ -224,37 +248,37 @@ fun MoodSelectionPage(modifier: Modifier = Modifier) {
 fun MoodList(modifier: Modifier = Modifier) {
     val checkedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
-    LazyVerticalGrid(
+    Column(
         modifier = modifier
             .fillMaxSize()
-//            .background(MaterialTheme.colorScheme.surfaceDim)
-            .padding(8.dp),
-        columns = GridCells.Fixed(1)
-
+            .padding(dimensionResource(R.dimen.padding_small)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
     ) {
-        items(8) { index ->
-            Row(
+
+        repeat(8) { index ->
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(dimensionResource(R.dimen.padding_small))
             ) {
-                Text(
-                    text = stringResource(R.string.mood_number, index),
-                    style = MaterialTheme.typography.bodyLarge,
-
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Checkbox(
-                    checked = checkedStates.getOrDefault(index, false),
-                    onCheckedChange = { checked ->
-                        checkedStates[index] = checked
-                    }
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_small)),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(stringResource(R.string.mood_number, index))
+                    Spacer(Modifier.weight(1f))
+                    Checkbox(
+                        checked = checkedStates.getOrDefault(index, false),
+                        onCheckedChange = { checkedStates[index] = it }
+                    )
+                }
             }
         }
     }
 }
+
 
 
 
@@ -316,68 +340,51 @@ fun MoodSelectionBottomBar(modifier: Modifier = Modifier) {
 @Composable
 fun ActivityTypePage(modifier: Modifier = Modifier) {
     Scaffold(
-        modifier = modifier,
-        topBar = { GeneralTopBar(stringResource(R.string.choose_activity_type)) },
-        bottomBar = { MoodSelectionBottomBar() }
+        modifier   = modifier,
+        topBar     = { GeneralTopBar(stringResource(R.string.choose_activity_type)) },
+        bottomBar  = { MoodSelectionBottomBar() }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(dimensionResource(R.dimen.padding_medium)),
+            verticalArrangement   = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium), Alignment.CenterVertically),
+            horizontalAlignment   = Alignment.CenterHorizontally
         ) {
+
             val buttonModifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(56.dp)
+                .fillMaxWidth()
+                .height(dimensionResource(R.dimen.button_height))
 
-            Button(
-                onClick = { /* TODO */ },
-                modifier = buttonModifier
-            ) {
+            Button(onClick = { /*…*/ }, modifier = buttonModifier) {
                 Text(
-                    text = stringResource(R.string.text_based),
-                    style = MaterialTheme.typography.titleLarge,
-
+                    text  = stringResource(R.string.text_based),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
-
-            Button(
-                onClick = { /* TODO */ },
-                modifier = buttonModifier
-            ) {
+            Button(onClick = { /*…*/ }, modifier = buttonModifier) {
                 Text(
-                    text = stringResource(R.string.link_video),
-                    style = MaterialTheme.typography.titleLarge,
-
+                    text  = stringResource(R.string.link_video),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
-
-            Button(
-                onClick = { /* TODO */ },
-                modifier = buttonModifier
-            ) {
+            Button(onClick = { /*…*/ }, modifier = buttonModifier) {
                 Text(
-                    text = stringResource(R.string.phone_call),
-                    style = MaterialTheme.typography.titleLarge,
-
+                    text  = stringResource(R.string.phone_call),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
-
-            Button(
-                onClick = { /* TODO */ },
-                modifier = buttonModifier
-            ) {
+            Button(onClick = { /*…*/ }, modifier = buttonModifier) {
                 Text(
-                    text = stringResource(R.string.document),
-                    style = MaterialTheme.typography.titleLarge,
-
+                    text  = stringResource(R.string.document),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
         }
     }
 }
+
 
 
 @Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
@@ -417,3 +424,11 @@ fun MindToolsAppPreview() {
 }
 
 
+@Preview(name = "Phone", device = "spec:width=411dp,height=891dp", showBackground = true)
+//@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp", showBackground = true)
+@Composable
+fun ActivityToolsPageDarkPreview() {
+    MindToolsAppTheme(darkTheme = true) {
+        ActivityToolsPage()
+    }
+}
