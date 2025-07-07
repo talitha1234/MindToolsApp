@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.foundation.Image
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Home
@@ -40,7 +38,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
@@ -51,14 +48,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import com.talithariddiford.mindtoolsapp.data.Datasource
-import com.talithariddiford.mindtoolsapp.model.Activity
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
+import com.talithariddiford.mindtoolsapp.views.ActivityListScreen
+
 
 
 class MainActivity : ComponentActivity() {
@@ -96,9 +90,10 @@ fun ActivityToolsPage(modifier: Modifier = Modifier) {
         bottomBar = { MindToolsBottomBar() },
 
     ) { paddingValues ->
-        ActivityList(
-            activities = Datasource().loadActivities(),
-            modifier = Modifier.padding(paddingValues)
+        ActivityListScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         )
     }
 }
@@ -173,71 +168,12 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
 
 
 
-@Composable
-fun ActivityList(
-    activities: List<Activity>,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = modifier) {
-        items(activities) { activity ->
-            ActivityRow(
-                activity = activity,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.padding_small))
-            )
-        }
-    }
-}
 
 
 
-@Composable
-fun ActivityRow(
-    activity: Activity,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-    ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-//            .height(72.dp)                   // ← make the row taller
-            .padding(dimensionResource(R.dimen.padding_small)),
-
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        MindToolIcon(
-            imageVector        = activity.icon,
-            contentDescription = stringResource(activity.titleRes)
-        )
-
-        Text(
-            text = stringResource(activity.titleRes),
-            style = MaterialTheme.typography.bodyLarge,
 
 
-        )
-    }
-        }
-}
 
-
-@Composable
-fun MindToolIcon(
-    imageVector: ImageVector,
-    contentDescription: String?,
-    modifier: Modifier = Modifier
-) {
-    Icon(
-        imageVector        = imageVector,
-        contentDescription = contentDescription,
-        modifier           = modifier
-            .size(dimensionResource(R.dimen.image_size))
-            .padding(dimensionResource(R.dimen.padding_small))
-            .clip(MaterialTheme.shapes.small)
-    )
-}
 
 
 @Composable
@@ -439,4 +375,10 @@ fun ActivityToolsPageDarkPreview() {
     MindToolsAppTheme(darkTheme = true) {
         ActivityToolsPage()
     }
+}
+
+@Preview
+@Composable
+fun MindToolsBottomBarPreview(){
+    MindToolsBottomBar()
 }
