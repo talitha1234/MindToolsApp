@@ -8,18 +8,25 @@ import com.talithariddiford.mindtoolsapp.R
 
 class ActivitiesRepositoryImpl(): ActivitiesRepository {
     override fun loadActivities(): List<Activity> {
-        return listOf<Activity>(
-            Activity(R.string.cbt, Icons.Rounded.Attachment),
-            Activity(R.string.phone_call, Icons.Rounded.Call),
-            Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
-            Activity(R.string.cbt, Icons.Rounded.Attachment),
-            Activity(R.string.call_lifeline, Icons.Rounded.Call),
-            Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
-            Activity(R.string.cbt, Icons.Rounded.Attachment),
-            Activity(R.string.call_lifeline, Icons.Rounded.Call),
-            Activity(R.string.sleep_video, Icons.Rounded.OndemandVideo),
-        )
+        return listOf(
+            Activity(
+                titleRes = R.string.cbt,
+                icon     = Icons.Rounded.Attachment,
+                payload  = "file:///android_asset/guide.pdf"
+            ),
+            Activity(
+                titleRes = R.string.sleep_video,
+                icon     = Icons.Rounded.OndemandVideo,
+                payload  = "https://www.youtube.com/watch?v=i7xGF8F28zo"
 
+            ),
+            Activity(
+                titleRes = R.string.call_lifeline,
+                icon     = Icons.Rounded.Call,
+                payload  = "tel:+61131114"
+
+            )
+        )
     }
 
 }
