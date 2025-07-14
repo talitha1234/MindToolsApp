@@ -9,11 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-
 import androidx.compose.foundation.layout.Arrangement
-
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,6 +41,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
@@ -63,20 +61,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MindToolsAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MindToolsApp(innerPadding = innerPadding)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    MindToolsApp()
                 }
-
-
             }
-
         }
-    }
+    } // end onCreate
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart Called")
     }
+
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume Called")
@@ -107,10 +105,9 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MindToolsApp(innerPadding: PaddingValues) {
+fun MindToolsApp() {
     ActivityToolsPage(modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding))
+        .fillMaxSize())
 }
 
 
@@ -122,7 +119,7 @@ fun ActivityToolsPage(modifier: Modifier = Modifier) {
         topBar = { MindToolsTopBar() },
         bottomBar = { MindToolsBottomBar() },
 
-    ) { paddingValues ->
+        ) { paddingValues ->
         ActivityListScreen(
             modifier = Modifier
                 .fillMaxSize()
@@ -130,6 +127,7 @@ fun ActivityToolsPage(modifier: Modifier = Modifier) {
         )
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
