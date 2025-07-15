@@ -19,4 +19,9 @@
     <string name="cbt">CBT Hot Thoughts</string>
     <string name="call_lifeline">Call Lifeline</string>
     <string name="sleep_video">Sleep Video</string>
+    <string name="enter_video_url">Enter Video/Link URL</string>
+    <string name="video_url">Enter Video/Link URL</string>
+    <string name="enter_contact_details">Enter contact details</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="phone_number">Phone Number</string>
 </resources>
