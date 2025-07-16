@@ -39,7 +39,7 @@ fun PhoneCallActivityCreationPage(
     var contactName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
 
-    MindToolsAppTheme { // ← Ensure you're inside your theme
+    MindToolsAppTheme {
         Scaffold(
             modifier = modifier,
             topBar = { GeneralTopBar(stringResource(R.string.phone_call)) },

@@ -13,17 +13,17 @@ class ActivitiesRepositoryImpl : ActivitiesRepository {
         Activity(
             titleRes = R.string.cbt,
             icon     = Icons.Rounded.Attachment,
-            payload  = "file:///android_asset/guide.pdf"
+            mindToolResource  = "file:///android_asset/guide.pdf"
         ),
         Activity(
             titleRes = R.string.sleep_video,
             icon     = Icons.Rounded.OndemandVideo,
-            payload  = "https://www.youtube.com/watch?v=i7xGF8F28zo"
+            mindToolResource  = "https://www.youtube.com/watch?v=i7xGF8F28zo"
         ),
         Activity(
             titleRes = R.string.call_lifeline,
             icon     = Icons.Rounded.Call,
-            payload  = "tel:+61131114"
+            mindToolResource  = "tel:+61131114"
         )
     )
 
