@@ -29,5 +29,9 @@
     <string name="mood_angry">Angry</string>
     <string name="mood_lonely">Lonely</string>
     <string name="mood_tired">Tired</string>
+    <string name="video_title">Video Title</string>
+    <string name="enter_video_details">Enter Video Details</string>
+    <string name="invalid_url">Please enter a valid URL</string>
+
 
 </resources>

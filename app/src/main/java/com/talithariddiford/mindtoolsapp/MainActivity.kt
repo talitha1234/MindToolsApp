@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import com.talithariddiford.mindtoolsapp.ui.ActivityToolsPage
+import com.talithariddiford.mindtoolsapp.ui.LinkVideoCreationPage
 
 private const val TAG = "MainActivity"
 

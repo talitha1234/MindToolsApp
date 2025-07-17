@@ -10,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +59,14 @@ fun ActivityListScreen(
     viewModel: ActivitiesViewModel = koinViewModel()
 ) {
     val ctx = LocalContext.current
-    val activities = previewActivities ?: viewModel.loadActivities()
+    val uiState by viewModel.uiState.collectAsState()
+    val activities = previewActivities ?: uiState.activities
+
+    LaunchedEffect(Unit) {
+        viewModel.loadActivities()
+    }
+
+
 
     var pendingActivity by remember { mutableStateOf<Activity?>(null) }
 
@@ -98,9 +107,11 @@ fun ActivityListScreen(
         activities = activities,
         modifier = modifier,
         onActivityClick = {
+            viewModel.selectedMood = null
             pendingActivity = it
             viewModel.onActivitySelected(it, ctx)
         }
+
     )
 }
 

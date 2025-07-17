@@ -1,5 +1,6 @@
 package com.talithariddiford.mindtoolsapp.data
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Attachment
 import androidx.compose.material.icons.rounded.Call
@@ -8,7 +9,6 @@ import com.talithariddiford.mindtoolsapp.R
 
 class ActivitiesRepositoryImpl : ActivitiesRepository {
 
-    // Store activities in a mutable list so we can add to it later
     private val activities = mutableListOf(
         Activity(
             titleRes = R.string.cbt,
@@ -27,11 +27,15 @@ class ActivitiesRepositoryImpl : ActivitiesRepository {
         )
     )
 
-    // Load current list
+
     override fun loadActivities(): List<Activity> = activities
 
-    // New method to add a new activity at runtime
-    fun addActivity(activity: Activity) {
+    // Add Activity
+    override fun addActivity(activity: Activity) {
         activities.add(activity)
+        Log.d("ActivitiesRepository", "Activities now: $activities")
+
     }
+
+
 }

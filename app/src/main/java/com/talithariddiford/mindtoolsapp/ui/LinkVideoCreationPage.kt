@@ -1,6 +1,8 @@
 package com.talithariddiford.mindtoolsapp.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
@@ -9,19 +11,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.talithariddiford.mindtoolsapp.GeneralTopBar
 
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
+import com.talithariddiford.mindtoolsapp.viewmodel.LinkVideoCreationViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LinkVideoCreationPage(
-    modifier: Modifier = Modifier.Companion,
-    onSave: (String) -> Unit = {}
+    modifier: Modifier = Modifier,
+    onSave: (title: String, url: String) -> Unit = { _, _ -> }
 ) {
     var videoUrl by rememberSaveable { mutableStateOf("") }
+    var videoTitle by rememberSaveable { mutableStateOf("") }
+    var isError by rememberSaveable { mutableStateOf(false) }
+    val viewModel: LinkVideoCreationViewModel = koinViewModel()
 
     MindToolsAppTheme {
         Scaffold(
@@ -30,9 +38,12 @@ fun LinkVideoCreationPage(
             bottomBar = {
                 BottomAppBar(
                     actions = {
-                        Spacer(Modifier.Companion.weight(1f))
+                        Spacer(Modifier.weight(1f))
                         FloatingActionButton(
-                            onClick = { onSave(videoUrl) }
+                            onClick = {
+                                isError = !viewModel.isValidURL(videoUrl)
+                                if (!isError) onSave(videoTitle, videoUrl)
+                            }
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Check,
@@ -44,29 +55,57 @@ fun LinkVideoCreationPage(
             }
         ) { paddingValues ->
             Column(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
                     .padding(dimensionResource(R.dimen.padding_medium)),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
             ) {
                 Text(
-                    text = stringResource(R.string.enter_video_url),
+                    text = stringResource(R.string.enter_video_details),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
                 OutlinedTextField(
+                    value = videoTitle,
+                    onValueChange = { videoTitle = it },
+                    label = { Text(stringResource(R.string.video_title)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
                     value = videoUrl,
-                    onValueChange = { videoUrl = it },
-                    label = { Text(stringResource(R.string.video_url)) },
-                    modifier = Modifier.Companion.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors()
+                    singleLine = true,
+                    shape = MaterialTheme.shapes.large,
+                    onValueChange = {
+                        videoUrl = it
+                        isError = false
+                    },
+                    label = {
+                        if (isError) {
+                            Text(stringResource(R.string.invalid_url))
+                        } else {
+                            Text(stringResource(R.string.video_url))
+                        }
+                    },
+                    isError = isError,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            isError = !viewModel.isValidURL(videoUrl)
+                            if (!isError) onSave(videoTitle, videoUrl)
+                        }
+                    )
                 )
             }
         }
     }
 }
+
+
 
 @Preview
 @Composable
