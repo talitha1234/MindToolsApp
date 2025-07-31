@@ -27,14 +27,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import com.talithariddiford.mindtoolsapp.GeneralTopBar
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
 @Composable
 fun PhoneCallActivityCreationPage(
     modifier: Modifier = Modifier,
-    onSave: (String, String) -> Unit = { _, _ -> }
+    onSave: (String, String) -> Unit = { _, _ -> },
+    navController: NavHostController
 ) {
     var contactName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
@@ -42,7 +44,7 @@ fun PhoneCallActivityCreationPage(
     MindToolsAppTheme {
         Scaffold(
             modifier = modifier,
-            topBar = { GeneralTopBar(stringResource(R.string.phone_call)) },
+            topBar = { GeneralTopBar(stringResource(R.string.phone_call), navController = navController) },
             bottomBar = {
                 BottomAppBar(
                     actions = {
@@ -95,8 +97,9 @@ fun PhoneCallActivityCreationPage(
 
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PhoneCallActivityPageCreationPreview() {
-    PhoneCallActivityCreationPage()
+    val navController = rememberNavController()
+    PhoneCallActivityCreationPage(navController = navController)
 }

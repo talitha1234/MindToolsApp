@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.talithariddiford.mindtoolsapp.GeneralTopBar
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 
 
@@ -28,20 +29,26 @@ import com.talithariddiford.mindtoolsapp.R
 @Composable
 fun PdfCreationPage(
     modifier: Modifier = Modifier,
-    onSaved: () -> Unit = {}
+    onSaved: () -> Unit = {},
+    navController: NavHostController
 ) {
     MindToolsAppTheme {
         Scaffold(
             modifier = modifier,
-            topBar = { GeneralTopBar(stringResource(R.string.document)) },
+            topBar = {
+                GeneralTopBar(
+                    topTitle = stringResource(R.string.document),
+                    navController = navController
+                )
+            },
             bottomBar = {
                 BottomAppBar {
                     Spacer(modifier = Modifier.weight(1f))
-                    FloatingActionButton(onClick = {
-                        // For now just trigger onSaved
-                        onSaved()
-                    }) {
-                        Icon(Icons.Rounded.Check, contentDescription = stringResource(R.string.save_selection))
+                    FloatingActionButton(onClick = { onSaved() }) {
+                        Icon(
+                            Icons.Rounded.Check,
+                            contentDescription = stringResource(R.string.save_selection)
+                        )
                     }
                 }
             }
@@ -63,10 +70,14 @@ fun PdfCreationPage(
 }
 
 
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun PdfCreationPagePreview() {
+    val navController = rememberNavController()
     MindToolsAppTheme {
-        PdfCreationPage()
+        PdfCreationPage(navController = navController)
     }
 }

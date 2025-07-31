@@ -10,16 +10,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.talithariddiford.mindtoolsapp.GeneralTopBar
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Mood
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
 @Composable
-fun MoodSelectionPage(modifier: Modifier = Modifier) {
+fun FilterByMoodPage(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         modifier = modifier,
-        topBar = { GeneralTopBar(stringResource(R.string.mood_title)) },
+        topBar = { GeneralTopBar(stringResource(R.string.mood_title), navController) },
         bottomBar = { MoodSelectionBottomBar() }
     ) { paddingValues ->
         MoodList(modifier = Modifier.padding(paddingValues))
@@ -93,10 +97,15 @@ fun MoodSelectionBottomBar(
 
 
 
+
+
 @Preview
 @Composable
 fun MoodSelectionPagePreview() {
+    val navController = rememberNavController()
     MindToolsAppTheme {
-        MoodSelectionPage()
+        FilterByMoodPage(navController = navController)
     }
 }
+
+

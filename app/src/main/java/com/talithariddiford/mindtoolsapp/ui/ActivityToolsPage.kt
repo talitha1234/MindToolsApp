@@ -26,23 +26,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.packt.chapterseven.navigation.Screens
 import com.talithariddiford.mindtoolsapp.R
-import com.talithariddiford.mindtoolsapp.data.ActivitiesRepositoryImpl
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
+import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ActivityToolsPage(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     previewActivities: List<Activity>? = null
 ) {
     Scaffold(
         modifier = modifier,
         topBar = { MindToolsTopBar() },
-        bottomBar = { MindToolsBottomBar() }
+        bottomBar = {
+            MindToolsBottomBar(
+                onAddClicked = {
+                    navController.navigate(Screens.AddActivityPage.route)
+                },
+                onTuneClicked = {
+                    navController.navigate(Screens.AddFilterByMoodPage.route)
+                }
+            )
+        }
     ) { paddingValues ->
         if (previewActivities != null) {
             // Preview mode: skip ViewModel and use only preview data
@@ -225,11 +238,15 @@ fun MindToolsTopBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MindToolsBottomBar(modifier: Modifier = Modifier) {
+fun MindToolsBottomBar(
+    modifier: Modifier = Modifier,
+    onAddClicked: () -> Unit = {},
+    onTuneClicked: () -> Unit = {}
+) {
     BottomAppBar(
         modifier = modifier,
         actions = {
-            IconButton(onClick = { /* TODO: Handle Add */ }) {
+            IconButton(onClick = onAddClicked) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
                     contentDescription = stringResource(R.string.add)
@@ -244,8 +261,8 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { /* TODO: Handle filter */ }
-            ) {
+                onClick = onTuneClicked,
+            ){
                 Icon(
                     imageVector = Icons.Rounded.Tune,
                     contentDescription = stringResource(R.string.filter_activities)
@@ -263,26 +280,33 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun ActivityToolsPagePreview() {
-    val sampleActivities = listOf(
-        Activity(
-            titleRes = R.string.cbt,
-            icon = Icons.Rounded.Attachment,
-            mindToolResource = "file:///android_asset/guide.pdf"
-        ),
-        Activity(
-            titleRes = R.string.sleep_video,
-            icon = Icons.Rounded.OndemandVideo,
-            mindToolResource = "https://youtube.com"
-        ),
-        Activity(
-            titleRes = R.string.call_lifeline,
-            icon = Icons.Rounded.Call,
-            mindToolResource = "tel:+61131114"
+    MindToolsAppTheme {
+        val sampleActivities = listOf(
+            Activity(
+                titleRes = R.string.cbt,
+                icon = Icons.Rounded.Attachment,
+                mindToolResource = "file:///android_asset/guide.pdf"
+            ),
+            Activity(
+                titleRes = R.string.sleep_video,
+                icon = Icons.Rounded.OndemandVideo,
+                mindToolResource = "https://youtube.com"
+            ),
+            Activity(
+                titleRes = R.string.call_lifeline,
+                icon = Icons.Rounded.Call,
+                mindToolResource = "tel:+61131114"
+            )
         )
-    )
 
-    ActivityToolsPage(previewActivities = sampleActivities)
+        val mockNavController = rememberNavController()
+        ActivityToolsPage(
+            navController = mockNavController,
+            previewActivities = sampleActivities
+        )
+    }
 }
+
 
 
 

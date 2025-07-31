@@ -13,9 +13,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
-import com.talithariddiford.mindtoolsapp.GeneralTopBar
-
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import com.talithariddiford.mindtoolsapp.viewmodel.LinkVideoCreationViewModel
@@ -24,6 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LinkVideoCreationPage(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     onSave: (title: String, url: String) -> Unit = { _, _ -> },
     viewModel: LinkVideoCreationViewModel = koinViewModel()
@@ -35,7 +35,7 @@ fun LinkVideoCreationPage(
     MindToolsAppTheme {
         Scaffold(
             modifier = modifier,
-            topBar = { GeneralTopBar(stringResource(R.string.link_video)) },
+            topBar = { GeneralTopBar(stringResource(R.string.link_video), navController = navController) },
             bottomBar = {
                 BottomAppBar(
                     actions = {
@@ -111,12 +111,19 @@ fun LinkVideoCreationPage(
 
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun LinkVideoCreationPagePreview() {
     val fakeViewModel = object : LinkVideoCreationViewModel() {
         override fun isValidURL(url: String): Boolean = true
     }
 
-    LinkVideoCreationPage(viewModel = fakeViewModel)
+    val navController = rememberNavController()
+
+    MindToolsAppTheme {
+        LinkVideoCreationPage(
+            navController = navController,
+            viewModel = fakeViewModel
+        )
+    }
 }
