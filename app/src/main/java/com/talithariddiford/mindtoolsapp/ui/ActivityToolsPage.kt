@@ -36,6 +36,7 @@ import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
 import org.koin.androidx.compose.koinViewModel
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ActivityToolsPage(
@@ -86,9 +87,7 @@ fun ActivityToolsPage(
 fun ActivityListScreen(
     modifier: Modifier = Modifier,
     previewActivities: List<Activity>? = null,
-    viewModel: ActivitiesViewModel,
-//    viewModel: ActivitiesViewModel = koinViewModel()
-
+    viewModel: ActivitiesViewModel
 ) {
     val ctx = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -98,54 +97,82 @@ fun ActivityListScreen(
         viewModel.loadActivities()
     }
 
-
-
     var pendingActivity by remember { mutableStateOf<Activity?>(null) }
+    var dialogVisible by remember { mutableStateOf(false) }
+    var selectedMoods by remember { mutableStateOf<Set<Mood>>(emptySet()) }
 
     // Show mood dialog if needed
-    if (viewModel.showMoodDialog.value && pendingActivity != null) {
+    if (dialogVisible && pendingActivity != null) {
         AlertDialog(
             onDismissRequest = {
-                viewModel.showMoodDialog.value = false
+                dialogVisible = false
                 pendingActivity = null
             },
-            title = { Text("Select Mood") },
+            title = { Text(stringResource(R.string.select_moods)) },
             text = {
                 Column {
                     Mood.entries.forEach { mood ->
-                        TextButton(onClick = {
-                            viewModel.confirmMoodAndLaunch(pendingActivity!!, ctx, mood)
-                            pendingActivity = null
-                        }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedMoods = selectedMoods.toMutableSet().also {
+                                        if (it.contains(mood)) it.remove(mood) else it.add(mood)
+                                    }
+                                }
+                        ) {
+                            Checkbox(
+                                checked = selectedMoods.contains(mood),
+                                onCheckedChange = {
+                                    selectedMoods = selectedMoods.toMutableSet().also { set ->
+                                        if (it) set.add(mood) else set.remove(mood)
+                                    }
+                                }
+                            )
                             Text(stringResource(mood.label))
                         }
                     }
                 }
             },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = {
-                    viewModel.showMoodDialog.value = false
+            confirmButton = {
+                Button(onClick = {
+                    if (pendingActivity != null) {
+                        viewModel.confirmMoodsAndLaunch(
+                            pendingActivity!!,
+                            ctx,
+                            selectedMoods
+                        )
+                    }
+                    dialogVisible = false
                     pendingActivity = null
                 }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    dialogVisible = false
+                    pendingActivity = null
+                }) {
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
     }
 
-    // Show the activity list
     ActivityListUI(
         activities = activities,
         modifier = modifier,
         onActivityClick = {
-            viewModel.selectedMood = null
+            // Always open dialog for mood selection
             pendingActivity = it
-            viewModel.onActivitySelected(it, ctx)
+            dialogVisible = true
+            selectedMoods = viewModel.selectedMoods // Or emptySet() if you want to reset
         }
-
     )
 }
+
 
 
 

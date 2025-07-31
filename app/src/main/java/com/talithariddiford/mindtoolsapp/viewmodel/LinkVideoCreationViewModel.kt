@@ -1,17 +1,15 @@
 package com.talithariddiford.mindtoolsapp.viewmodel
 
-import java.net.URL
-
 import androidx.lifecycle.ViewModel
 
 open class LinkVideoCreationViewModel : ViewModel() {
-    open fun isValidURL(url:String): Boolean {
-        try {
-            URL(url)
-            return true
-        } catch (e:Exception) {
-            return false
-        }
+    open fun isValidURL(url: String): Boolean {
+        val urlRegex = Regex(
+            pattern = """^(https?://)?(www\.)?[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}.*$""",
+            options = setOf(RegexOption.IGNORE_CASE)
+        )
+        return url.matches(urlRegex)
     }
+
 
 }

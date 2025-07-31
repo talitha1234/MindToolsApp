@@ -16,10 +16,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,6 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun PhoneCallActivityCreationPage(
@@ -42,15 +47,29 @@ fun PhoneCallActivityCreationPage(
     var phoneNumber by rememberSaveable { mutableStateOf("") }
 
     MindToolsAppTheme {
+        val snackbarHostState = remember { SnackbarHostState() }
+        val coroutineScope = rememberCoroutineScope()
+
         Scaffold(
             modifier = modifier,
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             topBar = { GeneralTopBar(stringResource(R.string.phone_call), navController = navController) },
             bottomBar = {
                 BottomAppBar(
                     actions = {
                         Spacer(Modifier.weight(1f))
                         FloatingActionButton(
-                            onClick = { onSave(contactName, phoneNumber) }
+                            onClick = {
+                                if (contactName.isNotBlank() && phoneNumber.isNotBlank()) {
+                                    onSave(contactName, phoneNumber)
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Activity added")
+                                        navController.popBackStack()
+                                    }
+
+                                }
+                            }
+
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Check,

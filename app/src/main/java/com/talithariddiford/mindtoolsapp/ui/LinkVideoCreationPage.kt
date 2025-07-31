@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import com.talithariddiford.mindtoolsapp.viewmodel.LinkVideoCreationViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -33,18 +34,36 @@ fun LinkVideoCreationPage(
     var isError by rememberSaveable { mutableStateOf(false) }
 
     MindToolsAppTheme {
+        val snackbarHostState = remember { SnackbarHostState() }
+        val coroutineScope = rememberCoroutineScope()
+
         Scaffold(
             modifier = modifier,
             topBar = { GeneralTopBar(stringResource(R.string.link_video), navController = navController) },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             bottomBar = {
                 BottomAppBar(
                     actions = {
                         Spacer(Modifier.weight(1f))
                         FloatingActionButton(
                             onClick = {
-                                isError = !viewModel.isValidURL(videoUrl)
-                                if (!isError) onSave(videoTitle, videoUrl)
+                                val isUrlValid = viewModel.isValidURL(videoUrl)
+                                val isTitleValid = videoTitle.isNotBlank()
+                                isError = !isUrlValid
+
+                                if (isUrlValid && isTitleValid) {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Activity added")
+                                        onSave(videoTitle, videoUrl)
+                                        navController.popBackStack()
+                                    }
+                                } else {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Please enter a valid title and URL")
+                                    }
+                                }
                             }
+
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Check,
@@ -97,7 +116,10 @@ fun LinkVideoCreationPage(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             isError = !viewModel.isValidURL(videoUrl)
-                            if (!isError) onSave(videoTitle, videoUrl)
+                            if (!isError) {
+                                onSave(videoTitle, videoUrl)
+                                navController.popBackStack()
+                            }
                         }
                     )
                 )

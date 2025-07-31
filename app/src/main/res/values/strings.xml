@@ -32,6 +32,12 @@
     <string name="video_title">Video Title</string>
     <string name="enter_video_details">Enter Video Details</string>
     <string name="invalid_url">Please enter a valid URL</string>
+    <string name="selected">Selected</string>
+    <string name="not_selected">Not selected</string>
+    <string name="select_moods">Select Moods</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
 
 
 </resources>

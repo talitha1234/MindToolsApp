@@ -22,65 +22,71 @@
     import com.talithariddiford.mindtoolsapp.R
     import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 
-    @Composable
-    fun ActivityTypePage(
-        modifier: Modifier = Modifier,
-        navController: NavHostController,
-        onSelectType: (String) -> Unit = { type ->
-            when (type) {
-                "linkVideo" -> navController.navigate(Screens.AddLinkVideoCreationPage.route)
-                "phoneCall" -> navController.navigate(Screens.AddPhoneCallCreationPage.route)
-                "pdf" -> navController.navigate(Screens.AddPdfCreationPage.route)
-            }
-        }
+@Composable
+fun ActivityTypePage(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    MindToolsAppTheme {
+        Scaffold(
+            modifier = modifier,
+            topBar = { GeneralTopBar(stringResource(R.string.choose_activity_type), navController) },
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .padding(dimensionResource(R.dimen.padding_medium)),
+                verticalArrangement = Arrangement.spacedBy(
+                    dimensionResource(R.dimen.padding_medium),
+                    Alignment.CenterVertically
+                ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val buttonModifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(R.dimen.button_height))
 
-
-    ) {
-        MindToolsAppTheme {
-            Scaffold(
-                modifier = modifier,
-                topBar = { GeneralTopBar(stringResource(R.string.choose_activity_type), navController) },
-
-            ) { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)),
-                    verticalArrangement = Arrangement.spacedBy(
-                        dimensionResource(R.dimen.padding_medium),
-                        Alignment.CenterVertically
-                    ),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Button(
+                    onClick = { navController.navigate(Screens.AddLinkVideoCreationPage.route) {
+                        launchSingleTop = true
+                    }},
+                    modifier = buttonModifier
                 ) {
-                    val buttonModifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.button_height))
+                    Text(
+                        text = stringResource(R.string.link_video),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
 
-                    Button(onClick = { onSelectType("linkVideo") }, modifier = buttonModifier) {
-                        Text(
-                            text = stringResource(R.string.link_video),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
+                Button(
+                    onClick = { navController.navigate(Screens.AddPhoneCallCreationPage.route){
+                        launchSingleTop = true
+                    } },
+                    modifier = buttonModifier
+                ) {
+                    Text(
+                        text = stringResource(R.string.phone_call),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
 
-                    Button(onClick = { onSelectType("phoneCall") }, modifier = buttonModifier) {
-                        Text(
-                            text = stringResource(R.string.phone_call),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-
-                    Button(onClick = { onSelectType("pdf") }, modifier = buttonModifier) {
-                        Text(
-                            text = stringResource(R.string.document),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
+                Button(
+                    onClick = { navController.navigate(Screens.AddPdfCreationPage.route){
+                        launchSingleTop = true
+                    } },
+                    modifier = buttonModifier
+                ) {
+                    Text(
+                        text = stringResource(R.string.document),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 }
             }
         }
     }
+}
+
 
 
 
