@@ -13,6 +13,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import com.talithariddiford.mindtoolsapp.GeneralTopBar
 
 import com.talithariddiford.mindtoolsapp.R
@@ -24,12 +25,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LinkVideoCreationPage(
     modifier: Modifier = Modifier,
-    onSave: (title: String, url: String) -> Unit = { _, _ -> }
+    onSave: (title: String, url: String) -> Unit = { _, _ -> },
+    viewModel: LinkVideoCreationViewModel = koinViewModel()
 ) {
     var videoUrl by rememberSaveable { mutableStateOf("") }
     var videoTitle by rememberSaveable { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
-    val viewModel: LinkVideoCreationViewModel = koinViewModel()
 
     MindToolsAppTheme {
         Scaffold(
@@ -107,8 +108,15 @@ fun LinkVideoCreationPage(
 
 
 
+
+
+
 @Preview
 @Composable
 fun LinkVideoCreationPagePreview() {
-    LinkVideoCreationPage()
+    val fakeViewModel = object : LinkVideoCreationViewModel() {
+        override fun isValidURL(url: String): Boolean = true
+    }
+
+    LinkVideoCreationPage(viewModel = fakeViewModel)
 }

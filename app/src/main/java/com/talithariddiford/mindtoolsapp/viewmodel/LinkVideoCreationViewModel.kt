@@ -4,8 +4,8 @@ import java.net.URL
 
 import androidx.lifecycle.ViewModel
 
-class LinkVideoCreationViewModel : ViewModel() {
-    fun isValidURL(url:String): Boolean {
+open class LinkVideoCreationViewModel : ViewModel() {
+    open fun isValidURL(url:String): Boolean {
         try {
             URL(url)
             return true

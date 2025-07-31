@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlinx-serialization")
+
+
+
 }
 
 android {
@@ -77,6 +81,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test"))
+    implementation(libs.bundles.networking)
+    implementation(libs.compose.navigation)
+
 
 
 }

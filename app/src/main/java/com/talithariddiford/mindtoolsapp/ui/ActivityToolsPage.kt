@@ -24,8 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.talithariddiford.mindtoolsapp.R
+import com.talithariddiford.mindtoolsapp.data.ActivitiesRepositoryImpl
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
 import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
@@ -42,12 +44,27 @@ fun ActivityToolsPage(
         topBar = { MindToolsTopBar() },
         bottomBar = { MindToolsBottomBar() }
     ) { paddingValues ->
-        ActivityListScreen(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            previewActivities = previewActivities
-        )
+        if (previewActivities != null) {
+            // Preview mode: skip ViewModel and use only preview data
+            ActivityListUI(
+                activities = previewActivities,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                onActivityClick = {}
+            )
+        } else {
+            // Runtime: use ViewModel from Koin
+            val viewModel: ActivitiesViewModel = koinViewModel()
+            ActivityListScreen(
+                viewModel = viewModel,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            )
+        }
+
+
     }
 }
 
@@ -56,7 +73,9 @@ fun ActivityToolsPage(
 fun ActivityListScreen(
     modifier: Modifier = Modifier,
     previewActivities: List<Activity>? = null,
-    viewModel: ActivitiesViewModel = koinViewModel()
+    viewModel: ActivitiesViewModel,
+//    viewModel: ActivitiesViewModel = koinViewModel()
+
 ) {
     val ctx = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -240,13 +259,30 @@ fun MindToolsBottomBar(modifier: Modifier = Modifier) {
     )
 }
 
-//@Preview
-//@Composable
-//fun ActivityToolsPagePreview() {
-//    MindToolsAppTheme {
-//        ActivityToolsPage()
-//    }
-//}
+
+@Preview(showBackground = true)
+@Composable
+fun ActivityToolsPagePreview() {
+    val sampleActivities = listOf(
+        Activity(
+            titleRes = R.string.cbt,
+            icon = Icons.Rounded.Attachment,
+            mindToolResource = "file:///android_asset/guide.pdf"
+        ),
+        Activity(
+            titleRes = R.string.sleep_video,
+            icon = Icons.Rounded.OndemandVideo,
+            mindToolResource = "https://youtube.com"
+        ),
+        Activity(
+            titleRes = R.string.call_lifeline,
+            icon = Icons.Rounded.Call,
+            mindToolResource = "tel:+61131114"
+        )
+    )
+
+    ActivityToolsPage(previewActivities = sampleActivities)
+}
 
 
 

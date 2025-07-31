@@ -32,7 +32,7 @@ fun MoodList(
     selectedMoods: Map<Mood, Boolean> = emptyMap(),
     onMoodToggle: (Mood, Boolean) -> Unit = { _, _ -> }
 ) {
-    val moods = Mood.values()
+    val moods = Mood.entries.toTypedArray()
 
     Column(
         modifier = modifier
