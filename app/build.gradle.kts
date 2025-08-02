@@ -5,9 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlinx-serialization")
-
-
-
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -20,7 +18,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -76,14 +73,14 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test"))
     implementation(libs.bundles.networking)
     implementation(libs.compose.navigation)
-
-
-
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.androidx.activity.compose)
 }

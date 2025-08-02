@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 
 import com.talithariddiford.mindtoolsapp.data.ActivitiesRepository
 
@@ -21,6 +22,8 @@ import com.talithariddiford.mindtoolsapp.data.Mood
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class ActivitiesViewModel(
     private val activityRepository: ActivitiesRepository
@@ -33,8 +36,11 @@ class ActivitiesViewModel(
     var showMoodDialog = mutableStateOf(false)
 
     fun loadActivities() {
-        val loaded = activityRepository.loadActivities()
-        _uiState.value = _uiState.value.copy(activities = loaded)
+        viewModelScope.launch {
+            activityRepository.getActivities().collectLatest { activities ->
+                _uiState.value = _uiState.value.copy(activities = activities)
+            }
+        }
     }
 
     fun onActivitySelected(activity: Activity, context: Context) {
@@ -71,9 +77,10 @@ class ActivitiesViewModel(
 
 
     fun addActivity(activity: Activity) {
-        activityRepository.addActivity(activity)
-        _uiState.value = _uiState.value.copy(activities = activityRepository.loadActivities())
-        Log.d("ActivitiesViewModel", "Activity added via ViewModel: $activity")
+        viewModelScope.launch {
+            activityRepository.addActivity(activity)
+            loadActivities()
+        }
     }
 
 

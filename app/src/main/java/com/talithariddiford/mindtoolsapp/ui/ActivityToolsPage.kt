@@ -33,8 +33,10 @@ import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
+import com.talithariddiford.mindtoolsapp.util.getIconByName
 import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
 import org.koin.androidx.compose.koinViewModel
+
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -216,6 +218,7 @@ fun ActivityRow(
                 imageVector = activity.icon,
                 contentDescription = stringResource(activity.titleRes)
             )
+
             Text(
                 text = stringResource(activity.titleRes),
                 style = MaterialTheme.typography.bodyLarge,
@@ -310,19 +313,28 @@ fun ActivityToolsPagePreview() {
     MindToolsAppTheme {
         val sampleActivities = listOf(
             Activity(
+                id = "1",
                 titleRes = R.string.cbt,
-                icon = Icons.Rounded.Attachment,
-                mindToolResource = "file:///android_asset/guide.pdf"
+                icon = getIconByName("attachment"),
+                iconName = "attachment",
+                mindToolResource = "file:///android_asset/guide.pdf",
+                helpfulnessByMood = emptyMap()
             ),
             Activity(
+                id = "2",
                 titleRes = R.string.sleep_video,
-                icon = Icons.Rounded.OndemandVideo,
-                mindToolResource = "https://youtube.com"
+                icon = getIconByName("ondemand_video"),
+                iconName = "ondemand_video",
+                mindToolResource = "https://youtube.com",
+                helpfulnessByMood = emptyMap()
             ),
             Activity(
+                id = "3",
                 titleRes = R.string.call_lifeline,
-                icon = Icons.Rounded.Call,
-                mindToolResource = "tel:+61131114"
+                icon = getIconByName("call"),
+                iconName = "call",
+                mindToolResource = "tel:+61131114",
+                helpfulnessByMood = emptyMap()
             )
         )
 
@@ -333,6 +345,8 @@ fun ActivityToolsPagePreview() {
         )
     }
 }
+
+
 
 
 
