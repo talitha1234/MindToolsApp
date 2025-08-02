@@ -5,8 +5,9 @@ sealed class Screens(val route: String) {
     object AddActivityPage : Screens("addActivity")
     object AddFilterByMoodPage: Screens("addFilterByMoodPage")
     object AddLinkVideoCreationPage: Screens("addLinkVideoCreationPage")
-    object AddPhoneCallCreationPage : Screens("AddphoneCallPage")
-    object AddPdfCreationPage : Screens("AddpdfPage")
+    object AddPhoneCallCreationPage : Screens("addPhoneCallPage")
+    object AddPdfCreationPage : Screens("addPdfPage")
+
 
 
 

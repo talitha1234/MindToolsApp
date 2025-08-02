@@ -77,6 +77,7 @@ class ActivitiesViewModel(
 
 
     fun addActivity(activity: Activity) {
+        Log.d("ActivitiesViewModel", "Adding activity: $activity")
         viewModelScope.launch {
             activityRepository.addActivity(activity)
             loadActivities()

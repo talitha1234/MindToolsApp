@@ -1,5 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
+import PhoneCallViewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,45 +41,46 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PhoneCallActivityCreationPage(
+    navController: NavHostController,
+    viewModel: PhoneCallViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     modifier: Modifier = Modifier,
-    onSave: (String, String) -> Unit = { _, _ -> },
-    navController: NavHostController
+    onSave: (String, String) -> Unit = { _, _ -> }
 ) {
-    var contactName by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    val contactName by viewModel.contactName.collectAsState()
+    val phoneNumber by viewModel.phoneNumber.collectAsState()
+    val isValid by viewModel.isValid.collectAsState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     MindToolsAppTheme {
-        val snackbarHostState = remember { SnackbarHostState() }
-        val coroutineScope = rememberCoroutineScope()
-
         Scaffold(
             modifier = modifier,
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-            topBar = { GeneralTopBar(stringResource(R.string.phone_call), navController = navController) },
+            topBar = { GeneralTopBar(stringResource(R.string.phone_call), navController) },
             bottomBar = {
-                BottomAppBar(
-                    actions = {
-                        Spacer(Modifier.weight(1f))
-                        FloatingActionButton(
-                            onClick = {
-                                if (contactName.isNotBlank() && phoneNumber.isNotBlank()) {
-                                    onSave(contactName, phoneNumber)
+                BottomAppBar {
+                    Spacer(Modifier.weight(1f))
+                    FloatingActionButton(
+                        onClick = {
+                            if (isValid) {
+                                viewModel.saveActivity { name, number ->
+                                    onSave(name, number)
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar("Activity added")
                                         navController.popBackStack()
                                     }
-
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Please enter both contact name and phone number")
                                 }
                             }
-
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = stringResource(R.string.save_selection)
-                            )
                         }
+                    ) {
+                        Icon(Icons.Rounded.Check, contentDescription = stringResource(R.string.save_selection))
                     }
-                )
+                }
             }
         ) { paddingValues ->
             Column(
@@ -87,27 +90,20 @@ fun PhoneCallActivityCreationPage(
                     .padding(dimensionResource(R.dimen.padding_medium)),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
             ) {
-                Text(
-                    text = stringResource(R.string.enter_contact_details),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
                 OutlinedTextField(
                     value = contactName,
-                    onValueChange = { contactName = it },
+                    onValueChange = viewModel::onContactNameChanged,
                     label = { Text(stringResource(R.string.contact_name)) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors() // Use theme defaults
+                    colors = OutlinedTextFieldDefaults.colors()
                 )
-
                 OutlinedTextField(
                     value = phoneNumber,
-                    onValueChange = { phoneNumber = it },
+                    onValueChange = viewModel::onPhoneNumberChanged,
                     label = { Text(stringResource(R.string.phone_number)) },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors() // Use theme defaults
+                    colors = OutlinedTextFieldDefaults.colors()
                 )
             }
         }

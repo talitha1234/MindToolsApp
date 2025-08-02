@@ -1,6 +1,8 @@
 package com.talithariddiford.mindtoolsapp.navigation
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.OndemandVideo
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -65,8 +67,26 @@ fun AppNavigation(
         }
 
         composable(Screens.AddPhoneCallCreationPage.route) {
-            PhoneCallActivityCreationPage(navController = navHostController)
+            val activitiesViewModel = koinViewModel<ActivitiesViewModel>()
+
+            PhoneCallActivityCreationPage(
+                navController = navHostController,
+                onSave = { name, number ->
+                    Log.d("AppNavigation", "onSave called with name: $name, number: $number")
+                    activitiesViewModel.addActivity(
+                        Activity(
+                            id = UUID.randomUUID().toString(),
+                            title = name,
+                            icon = Icons.Rounded.Call,
+                            iconName = "call",
+                            mindToolResource = "tel:$number",
+                            helpfulnessByMood = Mood.entries.associateWith { 3 }
+                        )
+                    )
+                }
+            )
         }
+
         composable(Screens.AddPdfCreationPage.route) {
             PdfCreationPage(navController = navHostController)
         }
