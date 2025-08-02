@@ -1,5 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
+import ActivitiesViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,44 +19,56 @@ import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Mood
 import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import kotlinx.coroutines.launch
-
-
-
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FilterByMoodPage(
     navController: NavHostController,
+    viewModel: ActivitiesViewModel = koinViewModel(), // Inject ViewModel
     modifier: Modifier = Modifier
 ) {
     var selectedMoods by rememberSaveable {
-        mutableStateOf(Mood.entries.associateWith { false })
+        mutableStateOf(Mood.entries.associateWith { viewModel.filterMoods.contains(it) })
     }
+
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    // Capture stringResource value here (inside @Composable scope)
+    val filteredByMoodMsg = stringResource(R.string.tools_filtered_by_mood)
+
+    // Define onSave as a lambda that uses the pre-captured string
+    val onSave = {
+        val moodsSelected = selectedMoods.filterValues { it }.keys.toSet()
+        viewModel.setFilterMoods(moodsSelected)
+
+        coroutineScope.launch {
+            // Use pre-captured string here
+            snackbarHostState.showSnackbar(filteredByMoodMsg)
+        }
+
+        navController.popBackStack()
+    }
+
+
+
+
 
     Scaffold(
         modifier = modifier,
         topBar = { GeneralTopBar(stringResource(R.string.mood_title), navController) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
-            MoodSelectionBottomBar(
-                onMoodSave = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Tools Filtered by Mood")
-                        navController.popBackStack()
-                    }
-                }
+            MoodSelectionBottomBar(onMoodSave = { onSave() })
 
-            )
+
         }
     ) { paddingValues ->
         MoodList(
             modifier = Modifier.padding(paddingValues),
             selectedMoods = selectedMoods,
-            onMoodToggle = { mood, isSelected ->
-                selectedMoods = selectedMoods.toMutableMap().apply {
-                    this[mood] = isSelected
-                }
+            onMoodToggle = { mood, selected ->
+                selectedMoods = selectedMoods.toMutableMap().apply { this[mood] = selected }
             }
         )
     }
@@ -70,8 +83,6 @@ fun MoodList(
 ) {
     val moods = Mood.entries.toTypedArray()
 
-
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -84,7 +95,7 @@ fun MoodList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.padding_small))
-                    .clickable { onMoodToggle(mood, !isSelected) }, // <– clickable here
+                    .clickable { onMoodToggle(mood, !isSelected) },
                 colors = CardDefaults.cardColors(
                     containerColor = if (isSelected)
                         MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
@@ -92,8 +103,7 @@ fun MoodList(
                         MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
-            )
-            {
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,7 +115,6 @@ fun MoodList(
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Spacer(Modifier.weight(1f))
-
 
                     IconToggleButton(
                         checked = isSelected,
@@ -123,16 +132,11 @@ fun MoodList(
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                         )
                     }
-
-
-
                 }
             }
         }
     }
 }
-
-
 
 @Composable
 fun MoodSelectionBottomBar(
@@ -153,10 +157,6 @@ fun MoodSelectionBottomBar(
     )
 }
 
-
-
-
-
 @Preview
 @Composable
 fun MoodSelectionPagePreview() {
@@ -165,5 +165,3 @@ fun MoodSelectionPagePreview() {
         FilterByMoodPage(navController = navController)
     }
 }
-
-

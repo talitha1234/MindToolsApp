@@ -37,6 +37,13 @@
     <string name="select_moods">Select Moods</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="feedback_title">Did this activity help?</string>
+    <string name="feedback_yes">Yes</string>
+    <string name="feedback_no">No</string>
+    <string name="feedback_no_change">No Change</string>
+    <string name="feedback_cancel">Cancel</string>
+    <string name="tools_filtered_by_mood">Tools Filtered by Mood</string>
+
 
 
 

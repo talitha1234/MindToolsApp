@@ -1,5 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
+import ActivitiesViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,17 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.packt.chapterseven.navigation.Screens
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
-import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
-import com.talithariddiford.mindtoolsapp.util.getIconByName
-import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
+
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -94,6 +91,7 @@ fun ActivityListScreen(
     val ctx = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val activities = previewActivities ?: uiState.activities
+    val feedbackPrompt by viewModel.showFeedbackPrompt.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadActivities()
@@ -103,7 +101,8 @@ fun ActivityListScreen(
     var dialogVisible by remember { mutableStateOf(false) }
     var selectedMoods by remember { mutableStateOf<Set<Mood>>(emptySet()) }
 
-    // Show mood dialog if needed
+
+    // Mood selection dialog
     if (dialogVisible && pendingActivity != null) {
         AlertDialog(
             onDismissRequest = {
@@ -163,17 +162,31 @@ fun ActivityListScreen(
         )
     }
 
+    val prompt = feedbackPrompt
+    if (prompt?.second == true) {
+        ActivityFeedbackDialog(
+            onResult = { response ->
+                viewModel.onFeedbackResponse(prompt.first ?: "", response)
+            },
+            onDismiss = {
+                viewModel.onFeedbackResponse(prompt.first ?: "", FeedbackResponse.NO_CHANGE)
+            }
+        )
+    }
+
+
+
     ActivityListUI(
         activities = activities,
         modifier = modifier,
         onActivityClick = {
-            // Always open dialog for mood selection
             pendingActivity = it
             dialogVisible = true
-            selectedMoods = viewModel.selectedMoods // Or emptySet() if you want to reset
+            selectedMoods = viewModel.selectedMoods
         }
     )
 }
+
 
 
 
@@ -223,6 +236,14 @@ fun ActivityRow(
                 text = activity.title, // <-- show user-typed title!
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
+            )
+        }
+        // Display helpfulness ratings (for debugging)
+        activity.helpfulnessByMood.forEach { (mood, rating) ->
+            Text(
+                text = "${stringResource(mood.label)}: $rating",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp)
             )
         }
     }
