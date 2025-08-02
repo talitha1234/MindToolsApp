@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlinx-serialization")
     id("com.google.devtools.ksp")
+//    id("androidx.room")
 }
 
 android {
@@ -39,6 +40,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 }
 

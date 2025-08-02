@@ -216,11 +216,11 @@ fun ActivityRow(
         ) {
             MindToolIcon(
                 imageVector = activity.icon,
-                contentDescription = stringResource(activity.titleRes)
+                contentDescription = activity.title // <-- show plain text
             )
 
             Text(
-                text = stringResource(activity.titleRes),
+                text = activity.title, // <-- show user-typed title!
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
             )
@@ -307,44 +307,44 @@ fun MindToolsBottomBar(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun ActivityToolsPagePreview() {
-    MindToolsAppTheme {
-        val sampleActivities = listOf(
-            Activity(
-                id = "1",
-                titleRes = R.string.cbt,
-                icon = getIconByName("attachment"),
-                iconName = "attachment",
-                mindToolResource = "file:///android_asset/guide.pdf",
-                helpfulnessByMood = emptyMap()
-            ),
-            Activity(
-                id = "2",
-                titleRes = R.string.sleep_video,
-                icon = getIconByName("ondemand_video"),
-                iconName = "ondemand_video",
-                mindToolResource = "https://youtube.com",
-                helpfulnessByMood = emptyMap()
-            ),
-            Activity(
-                id = "3",
-                titleRes = R.string.call_lifeline,
-                icon = getIconByName("call"),
-                iconName = "call",
-                mindToolResource = "tel:+61131114",
-                helpfulnessByMood = emptyMap()
-            )
-        )
-
-        val mockNavController = rememberNavController()
-        ActivityToolsPage(
-            navController = mockNavController,
-            previewActivities = sampleActivities
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ActivityToolsPagePreview() {
+//    MindToolsAppTheme {
+//        val sampleActivities = listOf(
+//            Activity(
+//                id = "1",
+//                titleRes = R.string.cbt,
+//                icon = getIconByName("attachment"),
+//                iconName = "attachment",
+//                mindToolResource = "file:///android_asset/guide.pdf",
+//                helpfulnessByMood = emptyMap()
+//            ),
+//            Activity(
+//                id = "2",
+//                titleRes = R.string.sleep_video,
+//                icon = getIconByName("ondemand_video"),
+//                iconName = "ondemand_video",
+//                mindToolResource = "https://youtube.com",
+//                helpfulnessByMood = emptyMap()
+//            ),
+//            Activity(
+//                id = "3",
+//                titleRes = R.string.call_lifeline,
+//                icon = getIconByName("call"),
+//                iconName = "call",
+//                mindToolResource = "tel:+61131114",
+//                helpfulnessByMood = emptyMap()
+//            )
+//        )
+//
+//        val mockNavController = rememberNavController()
+//        ActivityToolsPage(
+//            navController = mockNavController,
+//            previewActivities = sampleActivities
+//        )
+//    }
+//}
 
 
 
