@@ -102,11 +102,40 @@ class ActivitiesViewModel(
         intent?.let { context.startActivity(it) }
     }
 
-    fun confirmMoodsAndLaunch(activity: Activity, context: Context, moods: Set<Mood>) {
+    fun confirmMoodsAndLaunch(
+        activity: Activity,
+        context: Context,
+        moods: Set<Mood>,
+        addToCalendar: Boolean // <-- new param
+    ) {
         selectedMoods = moods
         showMoodDialog.value = false
         onActivitySelected(activity, context)
+        if (addToCalendar) {
+            addEventToCalendar(context, activity)
+        }
     }
+    fun addEventToCalendar(context: Context, activity: Activity) {
+        val intent = Intent(Intent.ACTION_INSERT).apply {
+            data = android.provider.CalendarContract.Events.CONTENT_URI
+            putExtra(android.provider.CalendarContract.Events.TITLE, activity.title)
+            // Add 15 minutes to the current time for the event
+            val startMillis = System.currentTimeMillis()
+            val endMillis = startMillis + 15 * 60 * 1000
+            putExtra(android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
+            putExtra(android.provider.CalendarContract.EXTRA_EVENT_END_TIME, endMillis)
+            // Optionally, add a description, location, etc.
+            putExtra(android.provider.CalendarContract.Events.DESCRIPTION, "Activity from MindToolsApp")
+        }
+        // Start the calendar insert intent
+        try {
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "No calendar app found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
 
     fun addActivity(activity: Activity) {
         Log.d("ActivitiesViewModel", "Adding activity: $activity")

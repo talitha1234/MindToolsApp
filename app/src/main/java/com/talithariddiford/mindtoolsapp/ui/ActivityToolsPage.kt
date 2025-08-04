@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -84,6 +85,7 @@ fun ActivityListScreen(
     val uiState by viewModel.uiState.collectAsState()
     val feedbackPrompt by viewModel.showFeedbackPrompt.collectAsState()
     val filterMoods by viewModel.filterMoods.collectAsState()
+    var addToCalendar by remember { mutableStateOf(false) }
 
     val activities = uiState.activities
     val filteredActivities = if (filterMoods.isEmpty()) {
@@ -158,6 +160,33 @@ fun ActivityListScreen(
                             Text(stringResource(mood.label))
                         }
                     }
+
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    var addToCalendar by remember { mutableStateOf(false) }
+
+                    Button(
+                        onClick = { addToCalendar = true }, // (or call your add-to-calendar function)
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Event,
+                            contentDescription = "Add to calendar",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text("Add to calendar")
+                    }
+
+                    // Optionally, show a confirmation or UI change if `addToCalendar` is true
+                    if (addToCalendar) {
+                        Text("Will add this to your calendar!", color = MaterialTheme.colorScheme.primary)
+                    }
+
+
                 }
             },
             confirmButton = {
@@ -166,7 +195,9 @@ fun ActivityListScreen(
                         viewModel.confirmMoodsAndLaunch(
                             pendingActivity!!,
                             ctx,
-                            selectedMoods
+                            selectedMoods,
+                            addToCalendar
+
                         )
                     }
                     dialogVisible = false
