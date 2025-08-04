@@ -11,4 +11,7 @@ interface ActivitiesRepository {
     suspend fun updateActivity(activity: Activity)
 
     suspend fun getActivityById(id: String): Activity?
+
+    suspend fun deleteActivity(activity: Activity)
+
 }

@@ -86,7 +86,8 @@ fun ActivityToolsPage(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                onActivityClick = {}
+                onActivityClick = {},
+                onDelete = {}
             )
         } else {
             ActivityListScreen(
@@ -247,7 +248,11 @@ fun ActivityListScreen(
                 dialogVisible = true
                 selectedMoods = viewModel.selectedMoods
 
+            },
+            onDelete = { activity ->
+                viewModel.deleteActivity(activity)
             }
+
         )
 //    }
 }
@@ -260,7 +265,8 @@ fun ActivityListScreen(
 fun ActivityListUI(
     activities: List<Activity>,
     modifier: Modifier = Modifier,
-    onActivityClick: (Activity) -> Unit
+    onActivityClick: (Activity) -> Unit,
+    onDelete: (Activity) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
         items(activities) { activity ->
@@ -269,7 +275,8 @@ fun ActivityListUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.padding_small)),
-                onClick = { onActivityClick(activity) }
+                onClick = { onActivityClick(activity) },
+                onDelete = onDelete
             )
         }
     }
@@ -281,7 +288,8 @@ fun ActivityListUI(
 fun ActivityRow(
     activity: Activity,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onDelete: (Activity) -> Unit
 ) {
     Card(
         modifier = modifier.clickable(onClick = onClick)
@@ -302,6 +310,12 @@ fun ActivityRow(
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
             )
+            IconButton(onClick = { onDelete(activity) }) {
+                Icon(
+                    imageVector = Icons.Rounded.Delete,
+                    contentDescription = "Delete Activity"
+                )
+            }
         }
         // Display helpfulness ratings (for debugging)
 //        activity.helpfulnessByMood.forEach { (mood, rating) ->

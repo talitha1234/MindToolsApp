@@ -140,6 +140,14 @@ class ActivitiesViewModel(
         }
     }
 
+    fun deleteActivity(activity: Activity) {
+        viewModelScope.launch {
+            activityRepository.deleteActivity(activity)
+            loadActivities() // refresh list after delete
+        }
+    }
+
+
     private suspend fun fetchQuoteFromApi(): String = withContext(Dispatchers.IO) {
         try {
             val response = URL("https://zenquotes.io/api/random").readText()

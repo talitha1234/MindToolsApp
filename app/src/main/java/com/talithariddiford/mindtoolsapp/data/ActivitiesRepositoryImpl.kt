@@ -29,5 +29,12 @@ class ActivitiesRepositoryImpl(
 
     override suspend fun getActivityById(id: String): Activity? =
         dao.getActivityById(id)?.toActivity()
+
+    override suspend fun deleteActivity(activity: Activity) {
+        withContext(Dispatchers.IO) {
+            dao.delete(activity.toEntity())
+        }
+    }
+
 }
 
