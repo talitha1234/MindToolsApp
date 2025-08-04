@@ -28,14 +28,15 @@ class ActivitiesViewModel(
 ) : ViewModel() {
 
     // Filter moods backing field and public getter
-    private var _filterMoods: Set<Mood> = emptySet()
-    val filterMoods: Set<Mood>
-        get() = _filterMoods
+    private val _filterMoods = MutableStateFlow<Set<Mood>>(emptySet())
+    val filterMoods: StateFlow<Set<Mood>> = _filterMoods.asStateFlow()
 
-    fun setFilterMoods(selected: Set<Mood>) {
-        _filterMoods = selected
-        // trigger UI update or reload here if necessary
+    fun setFilterMoods(moods: Set<Mood>) {
+        Log.d("ActivitiesViewModel", "setFilterMoods called with: $moods")
+        _filterMoods.value = moods
     }
+
+
 
     private val _uiState = MutableStateFlow(ActivitiesUiState())
     val uiState: StateFlow<ActivitiesUiState> = _uiState.asStateFlow()
@@ -144,10 +145,6 @@ class ActivitiesViewModel(
     }
 
 
-    fun updateFilterMoods(selected: Set<Mood>) {
-        setFilterMoods(selected)
-
-    }
 }
 
 enum class FeedbackResponse {

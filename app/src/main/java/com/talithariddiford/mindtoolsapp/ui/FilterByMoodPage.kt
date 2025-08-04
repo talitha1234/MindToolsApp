@@ -12,47 +12,60 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Mood
-import com.talithariddiford.mindtoolsapp.ui.theme.MindToolsAppTheme
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import android.util.Log
 
 @Composable
 fun FilterByMoodPage(
     navController: NavHostController,
-    viewModel: ActivitiesViewModel = koinViewModel(), // Inject ViewModel
+    viewModel: ActivitiesViewModel,
     modifier: Modifier = Modifier
 ) {
+    // Compose recomposition logging
+    Log.d("FilterByMoodPage", "Composable recomposed at ${System.currentTimeMillis()}")
+
+    // Collect filter moods state from ViewModel (assuming it's a StateFlow<Set<Mood>>)
+    val filterMoods by viewModel.filterMoods.collectAsState()
+
+    // Local state for selections
     var selectedMoods by rememberSaveable {
-        mutableStateOf(Mood.entries.associateWith { viewModel.filterMoods.contains(it) })
+        mutableStateOf(Mood.entries.associateWith { mood -> filterMoods.contains(mood) })
+    }
+
+    // Synchronize with filterMoods any time it changes!
+    LaunchedEffect(filterMoods) {
+        selectedMoods = Mood.entries.associateWith { mood -> filterMoods.contains(mood) }
+        Log.d("FilterByMoodPage", "LaunchedEffect: filterMoods updated to $filterMoods; selectedMoods now ${selectedMoods.filterValues { it }.keys}")
+    }
+
+    // Debug text at the top of UI
+    Column {
+        Text(
+            "DEBUG: filterMoods=${filterMoods.joinToString()} " +
+                    "selectedMoods=${selectedMoods.filterValues { it }.keys.joinToString()}"
+        )
+
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
-    // Capture stringResource value here (inside @Composable scope)
     val filteredByMoodMsg = stringResource(R.string.tools_filtered_by_mood)
 
-    // Define onSave as a lambda that uses the pre-captured string
+    // Log and apply filter on save
     val onSave = {
         val moodsSelected = selectedMoods.filterValues { it }.keys.toSet()
+        Log.d("FilterByMoodPage", "Saving filter: $moodsSelected")
         viewModel.setFilterMoods(moodsSelected)
 
         coroutineScope.launch {
-            // Use pre-captured string here
             snackbarHostState.showSnackbar(filteredByMoodMsg)
         }
-
+        Log.d("FilterByMoodPage", "Navigating back after save")
         navController.popBackStack()
     }
-
-
-
-
 
     Scaffold(
         modifier = modifier,
@@ -60,8 +73,6 @@ fun FilterByMoodPage(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             MoodSelectionBottomBar(onMoodSave = { onSave() })
-
-
         }
     ) { paddingValues ->
         MoodList(
@@ -69,6 +80,7 @@ fun FilterByMoodPage(
             selectedMoods = selectedMoods,
             onMoodToggle = { mood, selected ->
                 selectedMoods = selectedMoods.toMutableMap().apply { this[mood] = selected }
+                Log.d("FilterByMoodPage", "Mood toggled: $mood set to $selected; selectedMoods now ${selectedMoods.filterValues { it }.keys}")
             }
         )
     }
@@ -157,11 +169,11 @@ fun MoodSelectionBottomBar(
     )
 }
 
-@Preview
-@Composable
-fun MoodSelectionPagePreview() {
-    val navController = rememberNavController()
-    MindToolsAppTheme {
-        FilterByMoodPage(navController = navController)
-    }
-}
+//@Preview
+//@Composable
+//fun MoodSelectionPagePreview() {
+//    val navController = rememberNavController()
+//    MindToolsAppTheme {
+//        FilterByMoodPage(navController = navController)
+//    }
+//}

@@ -29,26 +29,25 @@ import java.util.UUID
 fun AppNavigation(
     navHostController: NavHostController = rememberNavController()
 ) {
+    val activitiesViewModel = koinViewModel<ActivitiesViewModel>() // Only one instance
     NavHost(
         navController = navHostController,
         startDestination = Screens.ActivityToolsPage.route
     ) {
         composable(Screens.ActivityToolsPage.route) {
-            ActivityToolsPage(navController = navHostController)
+            ActivityToolsPage(navController = navHostController, viewModel = activitiesViewModel)
         }
 
         composable(Screens.AddActivityPage.route) {
             ActivityTypePage(navController = navHostController)
         }
+
         composable(Screens.AddFilterByMoodPage.route) {
-            FilterByMoodPage(navController = navHostController)
+            FilterByMoodPage(navController = navHostController, viewModel = activitiesViewModel)
         }
 
         composable(Screens.AddLinkVideoCreationPage.route) {
-            // Get both view models
             val creationViewModel = koinViewModel<LinkVideoCreationViewModel>()
-            val activitiesViewModel = koinViewModel<ActivitiesViewModel>()
-
             LinkVideoCreationPage(
                 navController = navHostController,
                 viewModel = creationViewModel,
@@ -56,7 +55,7 @@ fun AppNavigation(
                     activitiesViewModel.addActivity(
                         Activity(
                             id = UUID.randomUUID().toString(),
-                            title = title, // Update if needed
+                            title = title,
                             icon = Icons.Rounded.OndemandVideo,
                             iconName = "ondemand_video",
                             mindToolResource = url,
@@ -68,8 +67,6 @@ fun AppNavigation(
         }
 
         composable(Screens.AddPhoneCallCreationPage.route) {
-            val activitiesViewModel = koinViewModel<ActivitiesViewModel>()
-
             PhoneCallActivityCreationPage(
                 navController = navHostController,
                 onSave = { name, number ->
@@ -91,7 +88,6 @@ fun AppNavigation(
         composable(Screens.AddPdfCreationPage.route) {
             PdfCreationPage(navController = navHostController)
         }
-
-
     }
 }
+

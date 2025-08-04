@@ -2,6 +2,7 @@ package com.talithariddiford.mindtoolsapp.ui
 
 import ActivitiesViewModel
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -32,33 +33,29 @@ import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
 
-import org.koin.androidx.compose.koinViewModel
-
-
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ActivityToolsPage(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    previewActivities: List<Activity>? = null
+    previewActivities: List<Activity>? = null,
+    viewModel: ActivitiesViewModel,
 ) {
+    val onAddClicked = { navController.navigate(Screens.AddActivityPage.route) }
+    val onFilterClicked = { navController.navigate(Screens.AddFilterByMoodPage.route) }
     Scaffold(
         modifier = modifier,
         topBar = { MindToolsTopBar() },
         bottomBar = {
             MindToolsBottomBar(
-                onAddClicked = {
-                    navController.navigate(Screens.AddActivityPage.route)
-                },
-                onTuneClicked = {
-                    navController.navigate(Screens.AddFilterByMoodPage.route)
-                }
+                onAddClicked = onAddClicked,
+                onTuneClicked = onFilterClicked
             )
         }
     ) { paddingValues ->
         if (previewActivities != null) {
-            // Preview mode: skip ViewModel and use only preview data
+            // Preview mode: just show previewActivities, no filtering here
             ActivityListUI(
                 activities = previewActivities,
                 modifier = Modifier
@@ -67,8 +64,6 @@ fun ActivityToolsPage(
                 onActivityClick = {}
             )
         } else {
-            // Runtime: use ViewModel from Koin
-            val viewModel: ActivitiesViewModel = koinViewModel()
             ActivityListScreen(
                 viewModel = viewModel,
                 modifier = Modifier
@@ -76,8 +71,6 @@ fun ActivityToolsPage(
                     .padding(paddingValues)
             )
         }
-
-
     }
 }
 
@@ -85,13 +78,44 @@ fun ActivityToolsPage(
 @Composable
 fun ActivityListScreen(
     modifier: Modifier = Modifier,
-    previewActivities: List<Activity>? = null,
     viewModel: ActivitiesViewModel
 ) {
     val ctx = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    val activities = previewActivities ?: uiState.activities
     val feedbackPrompt by viewModel.showFeedbackPrompt.collectAsState()
+    val filterMoods by viewModel.filterMoods.collectAsState()
+
+    val activities = uiState.activities
+    val filteredActivities = if (filterMoods.isEmpty()) {
+        activities
+    } else {
+        activities.filter { activity ->
+            filterMoods.any { mood -> (activity.helpfulnessByMood[mood] ?: 0) >= 3 }
+        }
+    }
+    // 1. Log recompositions and filter values
+    Log.d("ActivityListScreen", "Recomposed! filterMoods = $filterMoods")
+
+    // 2. Log counts and filter effect
+    Log.d(
+        "ActivityListScreen",
+        "All activities count = ${activities.size}, Filtered count = ${filteredActivities.size}, filterMoods = $filterMoods"
+    )
+
+    // 3. Log details of each filtered activity (for deep debugging)
+    filteredActivities.forEach { activity ->
+        Log.d(
+            "ActivityListScreen",
+            "Filtered activity: id=${activity.id}, title=${activity.title}, helpfulnessByMood=${activity.helpfulnessByMood}"
+        )
+    }
+
+    filterMoods.forEach { mood ->
+        Log.d(
+            "MoodTest",
+            "filterMoods element: $mood (${mood::class} @${System.identityHashCode(mood)})"
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadActivities()
@@ -173,18 +197,31 @@ fun ActivityListScreen(
             }
         )
     }
+    // Testing filter from this page and manually selecting a mood
+//    Column(modifier = modifier.fillMaxSize()) {
+//        Button(
+//            onClick = { viewModel.setFilterMoods(setOf(Mood.TIRED)) },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(8.dp)
+//        ) {
+//            Text(text = "Filter: Don't show Low Tired scored Activities")
+//        }
+
+//        Spacer(modifier = Modifier.height(8.dp))
 
 
+        ActivityListUI(
+            activities = filteredActivities,
+            modifier = modifier,
+            onActivityClick = {
+                pendingActivity = it
+                dialogVisible = true
+                selectedMoods = viewModel.selectedMoods
 
-    ActivityListUI(
-        activities = activities,
-        modifier = modifier,
-        onActivityClick = {
-            pendingActivity = it
-            dialogVisible = true
-            selectedMoods = viewModel.selectedMoods
-        }
-    )
+            }
+        )
+//    }
 }
 
 
@@ -239,13 +276,13 @@ fun ActivityRow(
             )
         }
         // Display helpfulness ratings (for debugging)
-        activity.helpfulnessByMood.forEach { (mood, rating) ->
-            Text(
-                text = "${stringResource(mood.label)}: $rating",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
+//        activity.helpfulnessByMood.forEach { (mood, rating) ->
+//            Text(
+//                text = "${stringResource(mood.label)}: $rating",
+//                style = MaterialTheme.typography.bodySmall,
+//                modifier = Modifier.padding(start = 16.dp)
+//            )
+//        }
     }
 }
 
