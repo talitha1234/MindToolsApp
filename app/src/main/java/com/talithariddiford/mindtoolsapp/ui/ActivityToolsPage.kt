@@ -1,6 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
-import ActivitiesViewModel
+
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -33,6 +33,13 @@ import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
 
+import androidx.compose.runtime.rememberCoroutineScope
+import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
+import com.talithariddiford.mindtoolsapp.viewmodel.FeedbackResponse
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -44,13 +51,31 @@ fun ActivityToolsPage(
 ) {
     val onAddClicked = { navController.navigate(Screens.AddActivityPage.route) }
     val onFilterClicked = { navController.navigate(Screens.AddFilterByMoodPage.route) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarEvent.collectLatest { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
+
+
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = modifier,
         topBar = { MindToolsTopBar() },
         bottomBar = {
             MindToolsBottomBar(
                 onAddClicked = onAddClicked,
-                onTuneClicked = onFilterClicked
+                onTuneClicked = onFilterClicked,
+                onQuoteClicked = {
+                    coroutineScope.launch {
+                        viewModel.fetchRandomQuote()
+                    }
+
+                }
             )
         }
     ) { paddingValues ->
@@ -84,8 +109,11 @@ fun ActivityListScreen(
     val uiState by viewModel.uiState.collectAsState()
     val feedbackPrompt by viewModel.showFeedbackPrompt.collectAsState()
     val filterMoods by viewModel.filterMoods.collectAsState()
-
+    var pendingActivity by remember { mutableStateOf<Activity?>(null) }
+    var dialogVisible by remember { mutableStateOf(false) }
+    var selectedMoods by remember { mutableStateOf<Set<Mood>>(emptySet()) }
     val activities = uiState.activities
+    val prompt = feedbackPrompt
     val filteredActivities = if (filterMoods.isEmpty()) {
         activities
     } else {
@@ -121,9 +149,8 @@ fun ActivityListScreen(
         viewModel.loadActivities()
     }
 
-    var pendingActivity by remember { mutableStateOf<Activity?>(null) }
-    var dialogVisible by remember { mutableStateOf(false) }
-    var selectedMoods by remember { mutableStateOf<Set<Mood>>(emptySet()) }
+
+
 
 
     // Mood selection dialog
@@ -136,6 +163,7 @@ fun ActivityListScreen(
             title = { Text(stringResource(R.string.select_moods)) },
             text = {
                 Column {
+
                     Mood.entries.forEach { mood ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -186,7 +214,7 @@ fun ActivityListScreen(
         )
     }
 
-    val prompt = feedbackPrompt
+
     if (prompt?.second == true) {
         ActivityFeedbackDialog(
             onResult = { response ->
@@ -329,7 +357,8 @@ fun MindToolsTopBar(modifier: Modifier = Modifier) {
 fun MindToolsBottomBar(
     modifier: Modifier = Modifier,
     onAddClicked: () -> Unit = {},
-    onTuneClicked: () -> Unit = {}
+    onTuneClicked: () -> Unit = {},
+    onQuoteClicked: () -> Unit = {}   // New callback for quote button
 ) {
     BottomAppBar(
         modifier = modifier,
@@ -340,17 +369,17 @@ fun MindToolsBottomBar(
                     contentDescription = stringResource(R.string.add)
                 )
             }
-            IconButton(onClick = { /* TODO: Handle Search */ }) {
+            IconButton(onClick = onQuoteClicked) {  // replaced Search with Quote button
                 Icon(
-                    imageVector = Icons.Rounded.Search,
-                    contentDescription = stringResource(R.string.search_activities)
+                    imageVector = Icons.Rounded.FormatQuote,
+                    contentDescription = "Inspirational Quote"
                 )
             }
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onTuneClicked,
-            ){
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Tune,
                     contentDescription = stringResource(R.string.filter_activities)
@@ -363,6 +392,7 @@ fun MindToolsBottomBar(
         }
     )
 }
+
 
 
 //@Preview(showBackground = true)

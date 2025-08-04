@@ -1,6 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
-import ActivitiesViewModel
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,7 @@ import com.talithariddiford.mindtoolsapp.R
 import com.talithariddiford.mindtoolsapp.data.Mood
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
 
 @Composable
 fun FilterByMoodPage(

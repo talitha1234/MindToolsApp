@@ -1,9 +1,10 @@
 package com.talithariddiford.mindtoolsapp.di
 
-import ActivitiesViewModel
+
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.talithariddiford.mindtoolsapp.data.*
+import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesViewModel
 
 import com.talithariddiford.mindtoolsapp.viewmodel.LinkVideoCreationViewModel
 import kotlinx.serialization.json.Json

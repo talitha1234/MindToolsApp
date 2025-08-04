@@ -1,6 +1,6 @@
 package com.talithariddiford.mindtoolsapp.ui
 
-import FeedbackResponse
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.talithariddiford.mindtoolsapp.R
+import com.talithariddiford.mindtoolsapp.viewmodel.FeedbackResponse
 
 @Composable
 fun ActivityFeedbackDialog(

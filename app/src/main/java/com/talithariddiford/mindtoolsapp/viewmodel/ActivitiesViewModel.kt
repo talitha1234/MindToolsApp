@@ -1,27 +1,32 @@
+package com.talithariddiford.mindtoolsapp.viewmodel
+
+
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
 import com.talithariddiford.mindtoolsapp.data.ActivitiesRepository
 import com.talithariddiford.mindtoolsapp.data.Activity
 import com.talithariddiford.mindtoolsapp.data.Mood
-
+import java.net.URL
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.os.CountDownTimer
-import com.talithariddiford.mindtoolsapp.viewmodel.ActivitiesUiState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+
 
 class ActivitiesViewModel(
     private val activityRepository: ActivitiesRepository
@@ -38,6 +43,8 @@ class ActivitiesViewModel(
 
 
 
+    private val _snackbarEvent = MutableSharedFlow<String>()
+    val snackbarEvent = _snackbarEvent.asSharedFlow()
     private val _uiState = MutableStateFlow(ActivitiesUiState())
     val uiState: StateFlow<ActivitiesUiState> = _uiState.asStateFlow()
 
@@ -45,7 +52,7 @@ class ActivitiesViewModel(
 
     var showMoodDialog = mutableStateOf(false)
 
-    // --- Feedback prompt related ---
+
     private var currentOpenedActivityId: String? = null
 
     private val _showFeedbackPrompt = MutableStateFlow<Pair<String?, Boolean>?>(null)
@@ -54,7 +61,12 @@ class ActivitiesViewModel(
     private var currentSelectedMoods: Set<Mood> = emptySet()
 
     private var feedbackTimer: CountDownTimer? = null
+    private val _currentQuote = MutableStateFlow("")
 
+//    // added this public function for test
+//    fun setCurrentSelectedMoods(moods: Set<Mood>) {
+//        currentSelectedMoods = moods
+//    }
     fun loadActivities() {
         viewModelScope.launch {
             activityRepository.getActivities().collectLatest { activities ->
@@ -116,6 +128,37 @@ class ActivitiesViewModel(
         }
     }
 
+    fun fetchRandomQuote() {
+
+        viewModelScope.launch {
+            val quote = fetchQuoteFromApi()
+            _currentQuote.value = quote
+            _snackbarEvent.emit(quote)
+            Log.d("ActivitiesViewModel", "Emitting quote: $quote")
+            _snackbarEvent.emit(quote)
+
+        }
+    }
+
+    private suspend fun fetchQuoteFromApi(): String = withContext(Dispatchers.IO) {
+        try {
+            val response = URL("https://zenquotes.io/api/random").readText()
+            val jsonArray = JSONArray(response)
+            val json = jsonArray.getJSONObject(0)
+            val quote = json.getString("q")
+            val author = json.getString("a")
+            "$quote — $author"
+        } catch (e: Exception) {
+            "Failed to load quote"
+        }
+    }
+
+
+
+
+
+
+
 
     fun onFeedbackResponse(activityId: String, response: FeedbackResponse) {
         _showFeedbackPrompt.value = activityId to false
@@ -143,6 +186,7 @@ class ActivitiesViewModel(
             loadActivities()
         }
     }
+
 
 
 }
