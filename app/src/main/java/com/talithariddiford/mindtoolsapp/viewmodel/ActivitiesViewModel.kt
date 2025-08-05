@@ -88,7 +88,7 @@ class ActivitiesViewModel(
         feedbackTimer?.cancel()
 
         // Start timer to show feedback prompt (testing with 30 seconds)
-        feedbackTimer = object : CountDownTimer(30 * 1000, 1000) {
+        feedbackTimer = object : CountDownTimer(5 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) { /* no-op */ }
             override fun onFinish() {
                 _showFeedbackPrompt.value = currentOpenedActivityId to true

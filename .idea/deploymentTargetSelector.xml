@@ -30,10 +30,10 @@
       </SelectionState>
       <SelectionState runConfigName="MainActivity (2)">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-08-04T18:36:37.089460400Z">
+        <DropdownSelection timestamp="2025-08-05T09:32:58.691821600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\taldo\.android\avd\Pixel_6_API_34.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\taldo\.android\avd\Pixel_8.avd" />
             </handle>
           </Target>
         </DropdownSelection>
