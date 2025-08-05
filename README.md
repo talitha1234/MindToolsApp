@@ -24,7 +24,7 @@ This empowers users to build meaningful habits based on what *actually* works fo
 - 😀 **Mood Tagging** – Select your mood when completing an activity
 - ⭐ **Rating System** – Track how helpful each activity was per mood
 - 🎯 **Mood-Based Suggestions** – Get filtered suggestions based on what helped in the past
-- 📅 **Google Calendar Sync** – Schedule activities in short blocks with calendar integration
+- 📅 **Google Calendar Sync** – Schedule activities in short blocks with calendar integration - Not yet available
 - 🌗 **Simple, Clean UI** – Built with Jetpack Compose and Material Design
 
 ---
